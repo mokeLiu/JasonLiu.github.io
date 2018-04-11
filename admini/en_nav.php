@@ -1,1 +1,0 @@
-<li><a href="?m=system&s=managechannel&cid=0&a=create">暂无网站频道，请添加网站频道</a></li>
