@@ -4,14 +4,10 @@ var pool,can,cxt;
 var lastTime,durTime;
 //canvas的宽高
 var canvW,canvH;
-//海葵,果实
-var ane;
-//鱼
-var mom;
-//大鱼尾巴，眼睛，身体1,身体2图片数组
-var bigTailPic = [],bigEyePic = [],bigBody = [];
-//灰尘图片
-var dustPic = [];
+//海葵,灰尘,鱼
+var ane,dust,fish,data;
+//大鱼尾巴，眼睛，身体的图片数组
+var tailPic = [],eyePic = [],fishBody = [];
 //鼠标或指控的坐标
 var touchX,touchY;
 //手机获取滑动坐标变化的方法是ontouchmove
@@ -31,52 +27,70 @@ function fishPool(){
 
 function init(){
 	pool = document.getElementById("pool");
-	can = pool.getElementById("can");
+	can = document.getElementById("can");
 	cxt = can.getContext("2d");
 
-	canvW = can.width = document.body.offsetWidth;
-	pool.style.width = canvW + "px";
-	canvH = can.height = document.body.offsetHeight;
-	pool.style.height = canvH + "px";
+	canvW = can.width = pool.offsetWidth;
+	canvH = can.height = pool.offsetHeight;
 
 	//添加关于鱼的监听事件
 	addHandler(can,move,onMoveDo);
 
-	data = new data();
-	data.init();
-	circle = new circle();
-	circle.init();
-	meet = new meet();
-	meet.init();
-
+	fish = new myFish();
+	fish.init();
 	ane = new aneObj();
 	ane.init();
-	fruit = new fruitObj();
-	fruit.init();
-	mom = new momFish();
-	mom.init();
-	baby = new babyFish();
-	baby.init();
 	dust = new dust();
 	dust.init();
+	fruit = new fruitObj();
+	fruit.init();
+	circle = new circle();
+	circle.init();
+	data = new data();
+	data.init();
 
 	touchX = canvW * 0.5;
 	touchY = canvH * 0.5;
 
 	//图片数组初始化
-	addPic(8,bigTailPic,'bigTail');
-	addPic(2,bigEyePic,'bigEye');
-	addPic(8,bigBodyB,'bigSwimBlue');
-	addPic(8,bigBodyO,'bigSwim');
-
-	addPic(2,babyEyePic,'babyEye');
-	addPic(1,babyTailPic,'babyTail');
-	addPic(20,babyBodyPic,'babyFade');
-
-	addPic(7,dustPic,'dust');
-	//开场动画或者界面引导
+	addPic(7,dust,'dust');
+	addPic(8,tailPic,'tail');
+	addPic(2,eyePic,'eye');
+	addPic(1,fishBody,'fishBody');
 }
 
 function loop(){
+	window.reAnimFrame(loop);
+	var now = Date.now();
+	durTime = now - lastTime;
+	lastTime = now;
+	durTime = durTime>40?40:durTime;
+ 
 
+	cxt.clearRect(0,0,canvW,canvH);
+	//在其它画布绘制时，清空之前的画布
+
+	ane.draw();
+	dust.draw();
+	fruitMonitor();
+	fruit.draw();
+	fish.draw();
+	data.draw();
+
+	window.onresize = resizeDo;
+	
+	testHitFruit();
+}
+
+function onMoveDo(e){
+	var ev = ('ontouchmove' in document) ? e.touches[0] : e;
+	touchX = ev.pageX;
+	touchY = ev.pageY-50;
+}
+
+function resizeDo(){
+	canvW = can.width = pool.offsetWidth;
+	canvH = can.height = pool.offsetHeight;
+	ane = new aneObj();
+	ane.init();
 }

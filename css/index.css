@@ -1,17 +1,17 @@
 *{margin:0;padding:0;}
-body {
+html,body{
   margin: 0;
   padding: 0;
   font-family: sans-serif;
   background-color: #666;
   overflow:hidden;
+  height:100%;
 }
 .content{
- background-color:#666;
- min-height:500px;
+  background-color:#666;
 }
 
-@media screen and (min-width: 1024px){
+@media screen and (min-width: 550px){
 	#pool{
 		width:100%;
 		background:purple;
@@ -19,11 +19,11 @@ body {
 		position:absolute;
 	}
 	#pool #can{
-		background:yellow;
+		background:#010940;
 	}
 }
 
-@media screen and (max-width: 1024px){
+@media screen and (max-width: 550px){
 	#pool{
 		display:none;
 	}
