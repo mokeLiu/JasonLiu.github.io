@@ -1,0 +1,39 @@
+header{
+  background-color: #222;
+  height: 40px;
+  padding: 10px 0;
+  color: white;
+  border-bottom:1px solid;
+}
+
+header .logo{
+  width: 15%;
+  height:40px;
+  float:left;
+  line-height:40px;
+  text-align:center;
+  box-sizing:border-box;
+  border-right:1px solid;
+}
+
+header .logo img{
+  animation: logoSpin 3s linear infinite;
+  max-width: 120px;max-height: 40px;
+}
+
+header h1{
+  font-size: 1.5em;
+  float:left;
+  width: 85%;
+  height: 40px;
+  line-height:40px;
+  text-align:center;
+}
+
+@keyframes logoSpin{
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  50 { transform: rotate(0deg); }
+  75% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}
