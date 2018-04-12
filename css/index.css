@@ -9,21 +9,21 @@ html,body{
 .content{
   background-color:#010940;
 }
-#pool{
-	width:100%;
-	background:#010940;
-	height:100%;
-	position:absolute;
-}
 
 @media screen and (min-width: 550px){
-	#pool #phoneShow{
-		display:none;
+	#pool{
+		width:100%;
+		background:#010940;
+		height:100%;
+		position:absolute;
+	}
+	#pool #can{
+		background:#010940;
 	}
 }
 
 @media screen and (max-width: 550px){
-	#pool #pcShow{
+	#pool{
 		display:none;
 	}
 }

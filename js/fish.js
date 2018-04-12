@@ -35,43 +35,17 @@ var isPc = (function browserRedirect() {
 window.onload = fishPool;
 
 function fishPool(){
-	pool = document.getElementById("pool");
-	pc = document.getElementById("pcShow");
-	phone = document.getElementById("phoneShow");
+	init();
 
 	lastTime = Date.now();
 	durTime = 0;
-	
-	if(isPc){
-		if(pc){
-			initPc(pc);
-			pcLoop();
-		}else{
-			initPhone(phone);
-			phoneLoop();
-		}
-	}else{
-		initPhone(phone);
-		phoneLoop();
-	}
+
+	loop();
 }
 
-function initPhone(can){
-	cxt = can.getContext("2d");
-
-	canvW = can.width = pool.offsetWidth;
-	canvH = can.height = pool.offsetHeight;
-
-	ane = new aneObj();
-	ane.init();
-	dust = new getDust();
-	dust.init();
-
-	//图片数组初始化
-	addPic(7,dustPic,'dust');
-}
-
-function initPc(can){
+function init(){
+	pool = document.getElementById("pool");
+	can = document.getElementById("can");
 	cxt = can.getContext("2d");
 
 	canvW = can.width = 1530;
@@ -103,23 +77,8 @@ function initPc(can){
 	addPic(1,fishBody,'fishBody');
 }
 
-function phoneLoop(){
-	window.reAnimFrame(phoneLoop);
-	var now = Date.now();
-	durTime = now - lastTime;
-	lastTime = now;
-	durTime = durTime>40?40:durTime;
- 
-
-	cxt.clearRect(0,0,canvW,canvH);
-	//在其它画布绘制时，清空之前的画布
-
-	ane.draw();
-	dust.draw();
-}
-
-function pcLoop(){
-	window.reAnimFrame(pcLoop);
+function loop(){
+	window.reAnimFrame(loop);
 	var now = Date.now();
 	durTime = now - lastTime;
 	lastTime = now;
@@ -154,7 +113,7 @@ function onResizeDo(){
 		fishPool();
 	}
 	if(document.body.offsetHeight!==canvH){
-		pc.height = canvH = document.body.offsetHeight;
+		can.height = canvH = document.body.offsetHeight;
 		ane.init();
 	}
 }
