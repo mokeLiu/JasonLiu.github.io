@@ -236,58 +236,58 @@
  100% {top:50px;}
 }
 @keyframes dotMoveLeft{
- 0% {left:35px;}
- 35% {left:40px;}
- 50% {left:35px;}
- 65% {left:40px;}
- 100% {left:35px;}
+ 0% {left:15px;}
+ 35% {left:20px;}
+ 50% {left:15px;}
+ 65% {left:20px;}
+ 100% {left:15px;}
 }
 @-moz-keyframes dotMoveLeft /* Firefox */{
- 0% {left:35px;}
- 35% {left:40px;}
- 50% {left:35px;}
- 65% {left:40px;}
- 100% {left:35px;}
+ 0% {left:15px;}
+ 35% {left:20px;}
+ 50% {left:15px;}
+ 65% {left:20px;}
+ 100% {left:15px;}
 }
 @-webkit-keyframes dotMoveLeft /* Safari 和 Chrome */{
- 0% {left:35px;}
- 35% {left:40px;}
- 50% {left:35px;}
- 65% {left:40px;}
- 100% {left:35px;}
+ 0% {left:15px;}
+ 35% {left:20px;}
+ 50% {left:15px;}
+ 65% {left:20px;}
+ 100% {left:15px;}
 }
 @-o-keyframes dotMoveLeft /* Opera */{
- 0% {left:35px;}
- 35% {left:40px;}
- 50% {left:35px;}
- 65% {left:40px;}
- 100% {left:35px;}
+ 0% {left:15px;}
+ 35% {left:20px;}
+ 50% {left:15px;}
+ 65% {left:20px;}
+ 100% {left:15px;}
 }
 @keyframes dotMoveRight{
- 0% {right:35px;}
- 35% {right:40px;}
- 50% {right:35px;}
- 65% {right:40px;}
- 100% {right:35px;}
+ 0% {right:15px;}
+ 35% {right:20px;}
+ 50% {right:15px;}
+ 65% {right:20px;}
+ 100% {right:15px;}
 }
 @-moz-keyframes dotMoveRight /* Firefox */{
- 0% {right:35px;}
- 35% {right:40px;}
- 50% {right:35px;}
- 65% {right:40px;}
- 100% {right:35px;}
+ 0% {right:15px;}
+ 35% {right:20px;}
+ 50% {right:15px;}
+ 65% {right:20px;}
+ 100% {right:15px;}
 }
 @-webkit-keyframes dotMoveRight /* Safari 和 Chrome */{
- 0% {right:35px;}
- 35% {right:40px;}
- 50% {right:35px;}
- 65% {right:40px;}
- 100% {right:35px;}
+ 0% {right:15px;}
+ 35% {right:20px;}
+ 50% {right:15px;}
+ 65% {right:20px;}
+ 100% {right:15px;}
 }
 @-o-keyframes dotMoveRight /* Opera */{
- 0% {right:35px;}
- 35% {right:40px;}
- 50% {right:35px;}
- 65% {right:40px;}
- 100% {right:35px;}
+ 0% {right:15px;}
+ 35% {right:20px;}
+ 50% {right:15px;}
+ 65% {right:20px;}
+ 100% {right:15px;}
 }

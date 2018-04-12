@@ -15,20 +15,63 @@ var touchX,touchY;
 var onOff = false;
 var move = ('ontouchmove' in document)?'touchmove':'mousemove';
 
+var isPc = (function browserRedirect() {  
+                var sUserAgent = navigator.userAgent.toLowerCase();  
+                var bIsIpad = sUserAgent.match(/ipad/i) == "ipad";  
+                var bIsIphoneOs = sUserAgent.match(/iphone os/i) == "iphone os";  
+                var bIsMidp = sUserAgent.match(/midp/i) == "midp";  
+                var bIsUc7 = sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4";  
+                var bIsUc = sUserAgent.match(/ucweb/i) == "ucweb";  
+                var bIsAndroid = sUserAgent.match(/android/i) == "android";  
+                var bIsCE = sUserAgent.match(/windows ce/i) == "windows ce";  
+                var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";  
+                if(bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) {  
+                    return false;//移动地址  
+                } else {  
+                    return true;//PC地址  
+                }  
+            })();
+
 window.onload = fishPool;
 
 function fishPool(){
-	init();
+	pool = document.getElementById("pool");
+	pc = document.getElementById("pcShow");
+	phone = document.getElementById("phoneShow");
 
 	lastTime = Date.now();
 	durTime = 0;
-
-	loop();
+	
+	if(isPc){
+		if(pc){
+			initPc(pc);
+			pcLoop();
+		}else{
+			initPhone(phone);
+			phoneLoop();
+		}
+	}else{
+		initPhone(phone);
+		phoneLoop();
+	}
 }
 
-function init(){
-	pool = document.getElementById("pool");
-	can = document.getElementById("can");
+function initPhone(can){
+	cxt = can.getContext("2d");
+
+	canvW = can.width = pool.offsetWidth;
+	canvH = can.height = pool.offsetHeight;
+
+	ane = new aneObj();
+	ane.init();
+	dust = new getDust();
+	dust.init();
+
+	//图片数组初始化
+	addPic(7,dustPic,'dust');
+}
+
+function initPc(can){
 	cxt = can.getContext("2d");
 
 	canvW = can.width = 1530;
@@ -60,8 +103,23 @@ function init(){
 	addPic(1,fishBody,'fishBody');
 }
 
-function loop(){
-	window.reAnimFrame(loop);
+function phoneLoop(){
+	window.reAnimFrame(phoneLoop);
+	var now = Date.now();
+	durTime = now - lastTime;
+	lastTime = now;
+	durTime = durTime>40?40:durTime;
+ 
+
+	cxt.clearRect(0,0,canvW,canvH);
+	//在其它画布绘制时，清空之前的画布
+
+	ane.draw();
+	dust.draw();
+}
+
+function pcLoop(){
+	window.reAnimFrame(pcLoop);
 	var now = Date.now();
 	durTime = now - lastTime;
 	lastTime = now;
@@ -96,7 +154,7 @@ function onResizeDo(){
 		fishPool();
 	}
 	if(document.body.offsetHeight!==canvH){
-		can.height = canvH = document.body.offsetHeight;
+		pc.height = canvH = document.body.offsetHeight;
 		ane.init();
 	}
 }
