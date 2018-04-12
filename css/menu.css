@@ -64,7 +64,7 @@
 }
 #holder #eyes{
  width:100%;
- height:80px;
+ height:70px;
  border-radius: 50% 50% 0 0;
  box-sizing:border-box;
  border:1px solid #339900;
@@ -97,7 +97,7 @@
  -o-animation: eyeBallAnim 5s linear 1s infinite;
 }
 #holder #con{
- padding:20px 15px;
+ padding:15px 20px;
  background-color:#fff;
  margin:0 5px;
  border-radius:20px;

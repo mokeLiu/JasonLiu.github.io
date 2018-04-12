@@ -97,7 +97,7 @@ myFish.prototype.draw = function(){
 }
 //鱼的绘制结束
 //灰尘绘制开始
-function dust(){
+function getDust(){
 	this.x = [];
 	this.y = [];
 	this.type = [];
@@ -105,8 +105,8 @@ function dust(){
  
 	this.base;
 }
-dust.prototype.num = 100;
-dust.prototype.init = function(){
+getDust.prototype.num = 100;
+getDust.prototype.init = function(){
 	for(var i=0;i<this.num;i++){
 		this.x[i] = Math.random()*canvW;
 		this.y[i] = Math.random()*canvH*0.8;
@@ -115,12 +115,12 @@ dust.prototype.init = function(){
 	}
 	this.base = 0;
 }
-dust.prototype.draw = function(){
+getDust.prototype.draw = function(){
 	this.base += durTime * 0.001;
 	for(var i=0;i<this.num;i++){
 		var moveX = Math.sin(this.base)*this.range[i];
 		cxt.save();
-		cxt.drawImage(dust[this.type[i]],this.x[i] + moveX,this.y[i]);
+		cxt.drawImage(dustPic[this.type[i]],this.x[i] + moveX,this.y[i]);
 		cxt.restore();
 	}
 }
@@ -213,33 +213,33 @@ function testHitFruit(){
 				fruit.dead(i);
 				circle.born( fruit.x[i], fruit.y[i] );
 				if(fruit.fruitType[i] == "A"){
-					data.blueNum ++;
-					data.allBlue ++;
+					myData.blueNum ++;
+					myData.allBlue ++;
 				}else{
-					data.orangeNum ++;
-					data.allOrange ++;
+					myData.orangeNum ++;
+					myData.allOrange ++;
 				}
-				data.addScore();
+				myData.addScore();
 			}
 		}
 	}
 }
 //碰撞检测绘制结束
 //碰撞圈绘制开始
-function circle(){
+function getCircle(){
 	this.x = [];
 	this.y = [];
 	this.r = [];
 	this.alive = [];
 }
-circle.prototype.num = 10;
-circle.prototype.init = function(){
+getCircle.prototype.num = 10;
+getCircle.prototype.init = function(){
 	for(var i=0;i<this.num;i++){
 		this.alive[i] = false;
 		this.r[i] = 0;
 	}
 }
-circle.prototype.draw = function(){
+getCircle.prototype.draw = function(){
 	cxt.save();
 	cxt.lineWidth = 3;
 	for(var i=0;i<this.num;i++){
@@ -259,7 +259,7 @@ circle.prototype.draw = function(){
 	}
 	cxt.restore();
 }
-circle.prototype.born = function( x, y ){
+getCircle.prototype.born = function( x, y ){
 	for(var i=0;i<this.num;i++){
 		if(!this.alive[i]){
 			this.alive[i] = true;

@@ -5,9 +5,9 @@ var lastTime,durTime;
 //canvas的宽高
 var canvW,canvH;
 //海葵,灰尘,鱼
-var ane,dust,fish,data;
+var ane,dust,fish,myData,circle;
 //大鱼尾巴，眼睛，身体的图片数组
-var tailPic = [],eyePic = [],fishBody = [];
+var tailPic = [],eyePic = [],fishBody = [],dustPic = [];
 //鼠标或指控的坐标
 var touchX,touchY;
 //手机获取滑动坐标变化的方法是ontouchmove
@@ -41,20 +41,20 @@ function init(){
 	fish.init();
 	ane = new aneObj();
 	ane.init();
-	dust = new dust();
+	dust = new getDust();
 	dust.init();
 	fruit = new fruitObj();
 	fruit.init();
-	circle = new circle();
+	circle = new getCircle();
 	circle.init();
-	data = new data();
-	data.init();
+	myData = new data();
+	myData.init();
 
 	touchX = canvW * 0.5;
 	touchY = canvH * 0.5;
 
 	//图片数组初始化
-	addPic(7,dust,'dust');
+	addPic(7,dustPic,'dust');
 	addPic(8,tailPic,'tail');
 	addPic(2,eyePic,'eye');
 	addPic(1,fishBody,'fishBody');
@@ -76,7 +76,7 @@ function loop(){
 	fruitMonitor();
 	fruit.draw();
 	fish.draw();
-	data.draw();
+	myData.draw();
 	circle.draw();
 	
 	window.onresize = onResizeDo;
@@ -94,5 +94,9 @@ function onResizeDo(){
 	if(!onOff && document.body.offsetWidth>=550){
 		onOff = true;
 		fishPool();
+	}
+	if(document.body.offsetHeight!==canvH){
+		can.height = canvH = document.body.offsetHeight;
+		ane.init();
 	}
 }
