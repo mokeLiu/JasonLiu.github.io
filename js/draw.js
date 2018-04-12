@@ -283,23 +283,17 @@ data.prototype.init = function(){
 	this.orangeNum = 0;
 	this.blueNum = 0;
 	this.score = 0;
-	dataStorage(dataName);
 }
-data.prototype.draw = function(blue,orange,score){
+data.prototype.draw = function(){
 	cxt.save();
  
 	cxt.fillStyle = "#fff";
 	cxt.font = "20px bold";
+	cxt.fillText( " score: "+this.score, 8, 25 );
 	cxt.drawImage( fruit.kindA,15, 50 );
 	cxt.drawImage( fruit.kindB,14, 82 );
-	if(score){
-		this.blueNum = blue;
-		this.orangeNum = orange;
-		this.score = score;
-	}
 	cxt.fillText( this.blueNum, 50, 68 );
 	cxt.fillText( this.orangeNum, 50, 100 );
-	cxt.fillText( " score: "+this.score, 8, 25 );
  
 	cxt.restore();
 }
@@ -307,21 +301,3 @@ data.prototype.addScore = function(){
 	this.score = ( this.orangeNum + this.blueNum * 2 ) * 10;
 }
 //数据绘制结束
-//localStorage
-function dataStorage(dataName,data){
-	//判断是否有预存值
-	if(!localStorage.getItem(dataName[0])) {
-		//不存在则新写
-		for(var i=0;i<dataName.length;i++){
-			localStorage.setItem(dataName[i],data[i]);
-		}
-		initStorage(dataName);
-	} else {
-		//存在则用原值写入
-		var data = [];
-		for(var i=0;i<dataName.length;i++){
-			data[i] = localStorage.getItem(dataName);
-		}
-		myData.draw(data);
-	}
-}
