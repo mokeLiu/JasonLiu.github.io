@@ -5,7 +5,7 @@ var lastTime,durTime;
 //canvas的宽高
 var canvW,canvH;
 //海葵,灰尘,鱼
-var ane,dust,fish,myData,circle;
+var ane,dust,fish,myData,circle,bubble;
 //大鱼尾巴，眼睛，身体的图片数组
 var tailPic = [],eyePic = [],fishBody = [],dustPic = [];
 //鼠标或指控的坐标
@@ -65,6 +65,8 @@ function init(){
 	fruit.init();
 	circle = new getCircle();
 	circle.init();
+	bubble = new getBubble();
+	bubble.init();
 	myData = new data();
 	myData.init();
 
@@ -84,7 +86,6 @@ function loop(){
 	durTime = now - lastTime;
 	lastTime = now;
 	durTime = durTime>40?40:durTime;
- 
 
 	cxt.clearRect(0,0,canvW,canvH);
 	//在其它画布绘制时，清空之前的画布
@@ -92,7 +93,8 @@ function loop(){
 	ane.draw();
 	dust.draw();
 	fruitMonitor();
-	fruit.draw();
+	fruit.draw()
+	bubble.draw();;
 	fish.draw();
 	myData.draw();
 	circle.draw();

@@ -271,6 +271,66 @@ getCircle.prototype.born = function( x, y ){
 	}
 }
 //碰撞圈绘制结束
+//泡泡绘制开始
+function getBubble(){
+	this.x = [];
+	this.y = [];
+	this.r = [];
+	this.bubbleTimer = 0;
+	this.alive = [];
+}
+getBubble.prototype.num = 10;
+getBubble.prototype.init = function(){
+	for(var i=0;i<this.num;i++){
+		this.alive[i] = false;
+		this.r[i] = 0;
+	}
+}
+getBubble.prototype.draw = function(){
+	cxt.save();
+	cxt.lineWidth = 1;
+	this.bubbleTimer += durTime;
+	if(this.bubbleTimer == 2400){
+		bubble.born(fish.x,fish.y);
+	}else if(this.bubbleTimer == 3200){
+		bubble.born(fish.x,fish.y);
+	}else if(this.bubbleTimer >= 4000){
+		bubble.born(fish.x,fish.y);
+		this.bubbleTimer = 0;
+	}
+	for(var i=0;i<this.num;i++){
+		if(this.alive[i]){
+			this.r[i] += durTime * 0.005;
+			this.y[i] -= durTime * 0.04;
+			if(this.r[i] > 13){
+				this.alive[i] = false;
+				break;
+			}
+			var alpha = 1 - this.r[i] / 13;
+			var alphaTxt = "rgba( 100, 200, 220, " + alpha + ")";
+			cxt.strokeStyle = alphaTxt;
+			cxt.fillStyle = alphaTxt;
+			cxt.beginPath();
+			cxt.arc( this.x[i], this.y[i], this.r[i], 0, 2*Math.PI );
+			cxt.fill();
+			cxt.closePath();
+			cxt.stroke();
+		}
+	}
+	cxt.restore();
+}
+getBubble.prototype.born = function( x, y ){
+	for(var i=0;i<this.num;i++){
+		if(!this.alive[i]){
+			this.alive[i] = true;
+			this.x[i] = x;
+			this.y[i] = y;
+			this.r[i] = 2;
+			return;
+		}
+	}
+}
+//泡泡绘制结束
 //数据绘制开始
 function data(){
 	this.orangeNum;
