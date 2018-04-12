@@ -19,7 +19,7 @@ aneObj.prototype.init = function(){
 aneObj.prototype.draw = function(){
 	cxt.save();
 	cxt.globalAlpha = 0.8;
-	cxt.strokeStyle = "#591578";
+	cxt.strokeStyle = "#B8494F";
 	cxt.lineWidth = 15;
 	cxt.lineCap = "round";
 	this.base += durTime * 0.001;
