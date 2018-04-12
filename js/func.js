@@ -46,4 +46,18 @@ function addPic(num,arr,name){
 		arr[i] = new Image();
 		arr[i].src = './images/fish/'+ name + i + '.png';
 	}
+}window.onbeforeunload = window.onunload = function(){
+	
+}
+
+
+//author: meizz 
+window.onbeforeunload = function(){ 
+	var n = window.event.screenX - window.screenLeft; 
+	var b = n > document.documentElement.scrollWidth-20; 
+	if(b && window.event.clientY < 0 || window.event.altKey){//浏览器关闭
+		window.event.returnValue = "dataStorage(dataName,[myData.blueNum,myData.orangeNum,myData.score]);"; //这里可以放置你想做的操作代码 
+	}else{//浏览器刷新
+		console.log("是刷新而非关闭"); 
+	} 
 }

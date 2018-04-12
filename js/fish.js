@@ -10,9 +10,12 @@ var ane,dust,fish,myData,circle;
 var tailPic = [],eyePic = [],fishBody = [],dustPic = [];
 //鼠标或指控的坐标
 var touchX,touchY;
+//需要存储的数据名称
+var dataName = ["blueNum","orangeNum","score"];
+//窗口调整大小的开关
+var onOff = false;
 //手机获取滑动坐标变化的方法是ontouchmove
 //而在电脑上面则是onmousemove
-var onOff = false;
 var move = ('ontouchmove' in document)?'touchmove':'mousemove';
 
 var isPc = (function browserRedirect() {  
