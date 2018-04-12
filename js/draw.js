@@ -306,15 +306,15 @@ getBubble.prototype.draw = function(){
 	for(var i=0;i<this.num;i++){
 		if(this.alive[i]){
 			this.r[i] += durTime * 0.005;
-			this.y[i] -= durTime * 0.04;
-			var moveX = Math.sin(this.base)*this.range[i]*0.08;
+			this.y[i] -= durTime * 0.05;
+			var moveX = Math.sin(this.base)*this.range[i]*0.06;
 			this.x[i] += moveX;
-			if(this.r[i] > 15){
+			if(this.r[i] > 12){
 				this.alive[i] = false;
 				break;
 			}
-			var alpha = 1 - this.r[i] / 15;
-			var alphaTxt = "rgba( 100, 200, 220, " + alpha + ")";
+			var alpha = 1 - this.r[i] / 12;
+			var alphaTxt = "rgba( 255, 255, 255, " + alpha + ")";
 			cxt.strokeStyle = alphaTxt;
 			cxt.fillStyle = alphaTxt;
 			cxt.beginPath();
