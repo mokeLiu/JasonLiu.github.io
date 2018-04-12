@@ -278,18 +278,23 @@ function getBubble(){
 	this.r = [];
 	this.bubbleTimer = 0;
 	this.alive = [];
+	this.range = [];
+
+	this.base = 0;
 }
 getBubble.prototype.num = 10;
 getBubble.prototype.init = function(){
 	for(var i=0;i<this.num;i++){
 		this.alive[i] = false;
 		this.r[i] = 0;
+		this.range[i] = Math.random()*10;
 	}
 }
 getBubble.prototype.draw = function(){
 	cxt.save();
 	cxt.lineWidth = 1;
 	this.bubbleTimer += durTime;
+	this.base += durTime * 0.001;
 	if(this.bubbleTimer == 2400){
 		bubble.born(fish.x,fish.y);
 	}else if(this.bubbleTimer == 3200){
@@ -302,11 +307,13 @@ getBubble.prototype.draw = function(){
 		if(this.alive[i]){
 			this.r[i] += durTime * 0.005;
 			this.y[i] -= durTime * 0.04;
-			if(this.r[i] > 13){
+			var moveX = Math.sin(this.base)*this.range[i]*0.08;
+			this.x[i] += moveX;
+			if(this.r[i] > 15){
 				this.alive[i] = false;
 				break;
 			}
-			var alpha = 1 - this.r[i] / 13;
+			var alpha = 1 - this.r[i] / 15;
 			var alphaTxt = "rgba( 100, 200, 220, " + alpha + ")";
 			cxt.strokeStyle = alphaTxt;
 			cxt.fillStyle = alphaTxt;
