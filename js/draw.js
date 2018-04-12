@@ -139,7 +139,7 @@ function fruitObj(){
 	this.r = [];
 }
 fruitObj.prototype.num = 100;
-fruitObj.prototype.limitNum = 10;
+fruitObj.prototype.limitNum = 20;
 fruitObj.prototype.init = function(){
 	for(var i=0;i<this.num;i++){
 		this.alive[i] = false;
@@ -241,7 +241,7 @@ circle.prototype.init = function(){
 }
 circle.prototype.draw = function(){
 	cxt.save();
-	cxt.lineWidth = 2;
+	cxt.lineWidth = 3;
 	for(var i=0;i<this.num;i++){
 		if(this.alive[i]){
 			this.r[i] += durTime * 0.05;

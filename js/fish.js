@@ -1,17 +1,18 @@
-//¶¨Òå¸÷ÖÖ»­²¼£¬»æÍ¼»·¾³
+//å®šä¹‰å„ç§ç”»å¸ƒï¼Œç»˜å›¾çŽ¯å¢ƒ
 var pool,can,cxt;
-//¶¨Òå³õÊ¼Ê±¼ä£¬³ÖÐøÊ±¼ä
+//å®šä¹‰åˆå§‹æ—¶é—´ï¼ŒæŒç»­æ—¶é—´
 var lastTime,durTime;
-//canvasµÄ¿í¸ß
+//canvasçš„å®½é«˜
 var canvW,canvH;
-//º£¿û,»Ò³¾,Óã
+//æµ·è‘µ,ç°å°˜,é±¼
 var ane,dust,fish,data;
-//´óÓãÎ²°Í£¬ÑÛ¾¦£¬ÉíÌåµÄÍ¼Æ¬Êý×é
+//å¤§é±¼å°¾å·´ï¼Œçœ¼ç›ï¼Œèº«ä½“çš„å›¾ç‰‡æ•°ç»„
 var tailPic = [],eyePic = [],fishBody = [];
-//Êó±ê»òÖ¸¿ØµÄ×ø±ê
+//é¼ æ ‡æˆ–æŒ‡æŽ§çš„åæ ‡
 var touchX,touchY;
-//ÊÖ»ú»ñÈ¡»¬¶¯×ø±ê±ä»¯µÄ·½·¨ÊÇontouchmove
-//¶øÔÚµçÄÔÉÏÃæÔòÊÇonmousemove
+//æ‰‹æœºèŽ·å–æ»‘åŠ¨åæ ‡å˜åŒ–çš„æ–¹æ³•æ˜¯ontouchmove
+//è€Œåœ¨ç”µè„‘ä¸Šé¢åˆ™æ˜¯onmousemove
+var onOff = false;
 var move = ('ontouchmove' in document)?'touchmove':'mousemove';
 
 window.onload = fishPool;
@@ -30,10 +31,10 @@ function init(){
 	can = document.getElementById("can");
 	cxt = can.getContext("2d");
 
-	canvW = can.width = pool.offsetWidth;
+	canvW = can.width = 1530;
 	canvH = can.height = pool.offsetHeight;
 
-	//Ìí¼Ó¹ØÓÚÓãµÄ¼àÌýÊÂ¼þ
+	//æ·»åŠ å…³äºŽé±¼çš„ç›‘å¬äº‹ä»¶
 	addHandler(can,move,onMoveDo);
 
 	fish = new myFish();
@@ -52,7 +53,7 @@ function init(){
 	touchX = canvW * 0.5;
 	touchY = canvH * 0.5;
 
-	//Í¼Æ¬Êý×é³õÊ¼»¯
+	//å›¾ç‰‡æ•°ç»„åˆå§‹åŒ–
 	addPic(7,dust,'dust');
 	addPic(8,tailPic,'tail');
 	addPic(2,eyePic,'eye');
@@ -68,7 +69,7 @@ function loop(){
  
 
 	cxt.clearRect(0,0,canvW,canvH);
-	//ÔÚÆäËü»­²¼»æÖÆÊ±£¬Çå¿ÕÖ®Ç°µÄ»­²¼
+	//åœ¨å…¶å®ƒç”»å¸ƒç»˜åˆ¶æ—¶ï¼Œæ¸…ç©ºä¹‹å‰çš„ç”»å¸ƒ
 
 	ane.draw();
 	dust.draw();
@@ -76,8 +77,9 @@ function loop(){
 	fruit.draw();
 	fish.draw();
 	data.draw();
-
-	window.onresize = resizeDo;
+	circle.draw();
+	
+	window.onresize = onResizeDo;
 	
 	testHitFruit();
 }
@@ -88,9 +90,9 @@ function onMoveDo(e){
 	touchY = ev.pageY-50;
 }
 
-function resizeDo(){
-	canvW = can.width = pool.offsetWidth;
-	canvH = can.height = pool.offsetHeight;
-	ane = new aneObj();
-	ane.init();
+function onResizeDo(){
+	if(!onOff && document.body.offsetWidth>=550){
+		onOff = true;
+		fishPool();
+	}
 }
