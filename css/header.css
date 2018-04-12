@@ -8,20 +8,32 @@ header{
 }
 
 header .logo{
+  width: 160px;
   height:40px;
   float:left;
   line-height:40px;
   text-align:center;
   box-sizing:border-box;
+  border-right:1px solid;
 }
 
 header .logo img{
   animation: logoSpin 3s linear infinite;
+  animation-direction:alternate;
+  width: 100px;height: auto;
+}
+header h1{
+  margin-left:160px;
+  font-size: 1.5em;
+  height: 40px;
+  line-height:40px;
+  text-align:center;
 }
 
 @media screen and (max-width: 450px){
 	header .logo{
 	  width: 100%;
+	  border:none;
 	}
 
 	header .logo img{
@@ -54,8 +66,8 @@ header .logo img{
 
 @keyframes logoSpin{
 	0% { transform: rotate(0deg); }
-	25% { transform: rotate(5deg); }
-	50 { transform: rotate(0deg); }
-	75% { transform: rotate(-5deg); }
+	40% { transform: rotate(5deg); }
+	50% { transform: rotate(-3deg); }
+	60% { transform: rotate(5deg); }
 	100% { transform: rotate(0deg); }
 }
