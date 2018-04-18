@@ -295,11 +295,11 @@ getBubble.prototype.draw = function(){
 	cxt.lineWidth = 1;
 	this.bubbleTimer += durTime;
 	this.base += durTime * 0.001;
-	if(this.bubbleTimer == 2400){
+	if(this.bubbleTimer == 1600){
 		bubble.born(fish.x,fish.y);
-	}else if(this.bubbleTimer == 3200){
+	}else if(this.bubbleTimer == 2400){
 		bubble.born(fish.x,fish.y);
-	}else if(this.bubbleTimer >= 4000){
+	}else if(this.bubbleTimer >= 3200){
 		bubble.born(fish.x,fish.y);
 		this.bubbleTimer = 0;
 	}
@@ -307,7 +307,7 @@ getBubble.prototype.draw = function(){
 		if(this.alive[i]){
 			this.r[i] += durTime * 0.005;
 			this.y[i] -= durTime * 0.05;
-			var moveX = Math.sin(this.base)*this.range[i]*0.06;
+			var moveX = Math.sin(this.base)*this.range[i]*0.055;
 			this.x[i] += moveX;
 			if(this.r[i] > 12){
 				this.alive[i] = false;
@@ -315,7 +315,7 @@ getBubble.prototype.draw = function(){
 			}
 			var alpha = 1 - this.r[i] / 12;
 			var alphaTxt = "rgba( 255, 255, 255, " + alpha + ")";
-			cxt.strokeStyle = alphaTxt;
+			cxt.strokeStyle = "#fff";
 			cxt.fillStyle = alphaTxt;
 			cxt.beginPath();
 			cxt.arc( this.x[i], this.y[i], this.r[i], 0, 2*Math.PI );

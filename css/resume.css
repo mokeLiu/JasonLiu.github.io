@@ -1,0 +1,183 @@
+
+/*@media screen and (min-width: 1000px)*/
+html,body{
+	background-color:#ddd;
+	width:100%;height:100%;
+}
+
+.content{
+	width:100%;height:auto;
+	background-color:#fff;
+}
+.content .top-data{
+	width:100%;
+	height:180px;
+	background-color:#D64;
+	padding:80px 0 70px;
+}
+.content .top-data .adjust-middle{
+	width:900px;
+	height:100%;
+	margin:0 auto;
+}
+.content .top-data .adjust-middle .photo-container{
+	width:180px;height:180px;
+	position:relative;
+	float:left;
+}
+.content .top-data .adjust-middle .photo-container .face{
+	width:160px;height:160px;
+	position:absolute;
+	top:10px;left:10px;
+}
+.content .top-data .adjust-middle .photo-container .borderImg{
+	width:100%;height:100%;
+	animation:rotateBg 3s linear infinite;
+}
+.content .top-data .adjust-middle h2{
+	height:100%;
+	font-weight:900;
+	color:#fff;
+	font-size:50px;
+	padding-left:80px;
+	margin-left:180px;
+	line-height:180px;
+	letter-spacing:3px;
+}
+.content .top-data .adjust-middle h2 span{
+	font-size:80px;
+	padding-right:20px;
+}
+.content .middle-border{
+	width:100%;height:61px;
+	background:url(../images/resume/cloud-bg.jpg) repeat-x;
+}
+.content .progress-data{
+	width:100%;
+	background-color:#FBFBFB;
+}
+.content .progress-data .progress-middle{
+	width:900px;
+	margin:0 auto;
+}
+.profile, .skills, .contact, .education, .practice{
+	width:900px;
+	overflow:hidden;
+	border-bottom:1px solid #ccc;
+}
+.content .progress-data .progress-middle .line{
+	width:180px;float:left;
+	background-image:url(../images/resume/dotBg.jpg);
+	background-repeat:repeat-y;
+	padding-bottom:1000px;
+	margin-bottom:-1000px;
+}
+.content .progress-data .progress-middle .line .info{
+	width:47px;height:50px;
+	background-image:url(../images/resume/tip-bg.png);
+	background-repeat:no-repeat;
+	color:#FDFDFD;
+	text-align:center;
+	line-height:47px;
+	font-size:16px;
+	font-weight:bold;
+	margin:20px auto;
+}
+.content .progress-data .progress-middle .data-holder{
+	width:720px;float:right;
+	padding-bottom:1030px;
+	margin-bottom:-1000px;
+	padding-top:30px;
+}
+.content .progress-data .progress-middle .data-holder p{
+	height:50px;
+	line-height:50px;
+	font-size:25px;
+	text-align:left;
+	float:left;
+	color:#3C3C3C;
+	font-weight:bold;
+}
+.content .progress-data .progress-middle .profile .data-holder p{
+	width:50%;
+}
+.content .progress-data .progress-middle .data-holder p span{
+	color:#DC6F57;
+}
+.content .progress-data .progress-middle .data-holder .ps-data{
+	padding:40px 0 0 40px;float:left;
+	background-image:url(../images/resume/tip-ps.jpg);
+	background-position:0 20px;
+	background-size:40px auto;
+	background-repeat:no-repeat;
+	line-height:30px;
+	font-size:16px;
+}
+.content .progress-data .progress-middle .contact .data-holder p{
+	width:100%;
+}
+
+.content .progress-data .progress-middle .skills .pic-data{
+	overflow:hidden;
+}
+.content .progress-data .progress-middle .skills .pic-data dl{
+	width:180px;height:240px;
+	margin-right:60px;
+	float:left;
+}
+.content .progress-data .progress-middle .skills .pic-data dl dt img{
+	width:100%;height:180px;
+}
+.content .progress-data .progress-middle .skills .pic-data dl dt{
+	width:100%;height:180px;
+}
+.content .progress-data .progress-middle .skills .pic-data dl dd{
+	width:100%;
+	text-align:center;
+	line-height:60px;
+	font-size:40px;
+	font-weight:900;
+}
+
+.content .progress-data .progress-middle .education .data-holder .edu p{height:auto;}
+.content .progress-data .progress-middle .education .data-holder .edu p.edu-gov{
+	width:100%;
+	line-height:35px;
+	color:#CF6F40;
+	font-weight:900;
+	font-size:22px;
+}
+.content .progress-data .progress-middle .education .data-holder .edu p.edu-time{
+	width:100%;
+	line-height:25px;
+}
+.content .progress-data .progress-middle .education .data-holder .edu p.edu-time span{
+	color:#A6A6A6;
+	font-size:16px;
+}
+.content .progress-data .progress-middle .education .data-holder .edu p.edu-info{
+	padding:10px 0;
+	width:100%;
+	line-height:38px;
+	color:#000;
+	font-size:17px;
+}
+
+.content .progress-data .progress-middle .practice .data-holder p a{
+	color:#D64;
+}
+.content .progress-data .progress-middle .practice .data-holder p img{
+	height:20px;margin-top:-5px;
+	margin-left:5px;
+	animation:pointerToClick 1s ease-in infinite;
+}
+
+@keyframes rotateBg{
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+@keyframes pointerToClick{
+	0% { margin-left:5px; }
+	70% { margin-left:20px; }
+	100% { margin-left:5px; }
+}
