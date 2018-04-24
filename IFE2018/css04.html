@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="Author" content="Jason">
+		<title>3D 空间的卡片翻转动效</title>
+	</head>
+	<style>
+*{margin:0;padding:0;}
+body{
+	width:100%;height:100%;
+	background-color:#fff;
+}
+ul{
+	perspective:500px;
+	width:250px;height:350px;
+	position:absolute;
+	top:50%;left:50%;
+	margin-left:-125px;
+	margin-top:-175px;
+}
+ul li{
+	list-style:none;
+	width:100%;height:100%;
+	position:absolute;
+	top:0;left:0;
+}
+ul li.back{
+	background:url(./任务四设计稿/反面.jpg) no-repeat;
+	transform:rotateY(180deg);
+	transition:transform .8s, z-index .8s;
+}
+ul li.front{
+	background:url(./任务四设计稿/正面.jpg) no-repeat;
+	transition:transform .8s;
+	z-index:4;
+}
+ul:hover li.back{
+	transform:rotateY(360deg);
+	z-index:9;
+}
+ul:hover li.front{
+	transform:rotateY(180deg);
+}
+	</style>
+	<body>
+		<ul>
+			<li class="back"></li>
+			<li class="front"></li>
+		</ul>
+	</body>
+</html>
