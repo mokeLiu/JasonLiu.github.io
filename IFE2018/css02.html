@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="Author" content="Jason">
+		<title>初步接触 CSS 2D 变形</title>
+	</head>
+	<style>
+*{margin:0;padding:0;}
+body{
+	padding:20px;
+	background-color:#fff;
+}
+div{
+	width:50px;height:50px;
+	background-color:#F7F6F6;
+	border:1px solid #EBEBEB;
+	line-height:50px;
+	text-align:center;
+	margin-right:30px;
+	float:left;
+}
+div.box1{
+	transform:skewX(30deg);
+}
+div.box2{
+	transform:scaleX(.5);
+}
+div.box3{
+	transform:rotateZ(45deg);
+}
+div.box4{
+	transform:translate(10px, 20px);
+}
+div.box5{
+	transform:skewX(30deg) scaleX(.5) rotateZ(45deg) translate(10px, 20px);
+}
+	</style>
+	<body>
+		<div class="box0">box0</div>
+		<div class="box1">box1</div>
+		<div class="box2">box2</div>
+		<div class="box3">box3</div>
+		<div class="box4">box4</div>
+		<div class="box5">box5</div>
+	</body>
+</html>
