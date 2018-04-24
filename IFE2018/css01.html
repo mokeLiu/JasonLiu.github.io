@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="Author" content="Jason">
+		<title>制作一个简单的菜单动画效果</title>
+		<style>
+*{margin:0;padding:0;}
+html,body{
+	width:100%;height:100%;
+	background-color:#fff;
+	text-align:center;
+}
+div{
+	width:100%;
+	padding:50px 0;
+}
+div h3{
+	width:100%;height:50px;
+	line-height:50px;
+	text-align:center;
+	font-size:30px;
+	font-weight:bold;
+}
+div p{
+	width:0;
+	margin:0 auto;
+	border-top:2px solid #0734B1;
+	/* animation:changeStyle 0.5s ease-in; */
+}
+input{
+	width:110px;height:30px;
+	border:1px solid #BFBFBF;
+	border-radius:8px;
+	box-shadow:0 1px 1px #6F6F6F;
+	font-size:18px;
+}
+@keyframes changeStyle{
+	from {width:0;}
+	to {width:110px;}
+}
+		</style>
+	</head>
+	<body>
+		<div>
+			<h3>前端学院</h3>
+			<p></p>
+		</div>
+		<input type="button" value="切换样式" />
+	</body>
+	<script>
+window.onload = function(){
+	var btn = document.getElementsByTagName('input')[0];
+	var text = document.getElementsByTagName('h3')[0];
+	var line = document.getElementsByTagName('p')[0];
+	var timer = null;
+	var onOff = false;
+	btn.ontouchend = btn.onmouseup = function(){
+		this.disabled = true;
+		timer = setInterval(function(){
+			if(line.offsetWidth<130 && !onOff){
+				line.style.width = line.offsetWidth+5 +"px";
+			}else if(line.offsetWidth>0 && onOff){
+				line.style.width = line.offsetWidth-5 +"px";
+			}else{
+				text.style.color = onOff ? "#000" : "#0734B1";
+				btn.disabled = false;
+				onOff = !onOff;
+				clearInterval(timer);
+			}
+		}, 10);
+	}
+}
+	</script>
+</html>
