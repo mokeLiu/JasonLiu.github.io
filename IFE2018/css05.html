@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="Author" content="Jason">
+		<title>纯 CSS 制作绕中轴旋转的立方体</title>
+	</head>
+	<style>
+*{margin:0;padding:0;}
+body{
+	width:100%;height:100%;
+	background-color:#000;
+	overflow:hidden;
+}
+ul{
+	width:300px;height:300px;
+	perspective:300px;
+	perspective-origin:50%;
+	position:absolute;
+	top:50%;left:50%;
+	margin-top:-150px;
+	margin-left:-150px;
+}
+ul li{
+	list-style:none;
+	width:100%;height:100%;
+	transform-origin:center;
+	transform-style:preserve-3d;
+	box-sizing:border-box;
+	border:1px solid #63C6FF;
+	background-color:rgba(31, 79, 125, .5);
+	position:absolute;
+	top:0;left:0;
+	text-align:center;
+	line-height:300px;
+	font-size:200px;
+	font-weight:bold;
+	color:#fff;
+	/* transition:transform 2s linear; */
+}
+ul li.two{
+	transform:rotateY(-90deg) translateZ(150px) translateX(-150px);
+}
+ul li.three{
+	transform:rotateY(90deg) translateZ(150px) translateX(150px);
+}
+ul li.four{
+	transform:rotateX(90deg) rotateZ(0) translateX(0) translateZ(150px) translateY(-150px);
+}
+ul li.five{
+	transform:rotateX(-90deg) rotateZ(0) translateX(0px) translateZ(150px) translateY(150px);
+}
+ul li.six{
+	transform:rotateY(180deg) translateZ(300px) translateX(0);
+}
+ul:hover li{
+	animation-duration:10s;
+	animation-timing-function:linear;
+	animation-iteration-count:infinite;
+}
+ul:hover li.one{
+	/* transform:rotateY(-90deg) translateZ(150px) translateX(-150px); */
+	animation-name:oneMove;
+}
+ul:hover li.two{
+	/* transform:rotateY(-180deg) translateZ(300px) translateX(0); */
+	animation-name:twoMove;
+}
+ul:hover li.three{
+	/* transform:rotateY(0) translateZ(0) translateX(0); */
+	animation-name:threeMove;
+}
+ul:hover li.four{
+	/* transform:rotateX(90deg) rotateZ(90deg) translateX(-150px) translateZ(150px) translateY(0); */
+	animation-name:fourMove;
+}
+ul:hover li.five{
+	/* transform:rotateX(-90deg) rotateZ(-90deg) translateX(-150px) translateZ(150px) translateY(0); */
+	animation-name:fiveMove;
+}
+ul:hover li.six{
+	/* transform:rotateY(90deg) translateZ(150px) translateX(150px); */
+	animation-name:sixMove;
+}
+@keyframes oneMove{
+	0% {transform:rotateY(0) translateZ(0) translateX(0);}
+	25% {transform:rotateY(-90deg) translateZ(150px) translateX(-150px);}
+	50% {transform:rotateY(-180deg) translateZ(300px) translateX(0);}
+	75% {transform:rotateY(-270deg) translateZ(150px) translateX(150px);}
+	100% {transform:rotateY(-360deg) translateZ(0) translateX(0);}
+}
+@keyframes twoMove{
+	0% {transform:rotateY(-90deg) translateZ(150px) translateX(-150px);}
+	25% {transform:rotateY(-180deg) translateZ(300px) translateX(0);}
+	50% {transform:rotateY(-270deg) translateZ(150px) translateX(150px);}
+	75% {transform:rotateY(-360deg) translateZ(0) translateX(0);}
+	100% {transform:rotateY(-450deg) translateZ(150px) translateX(-150px);}
+}
+@keyframes sixMove{
+	0% {transform:rotateY(-180deg) translateZ(300px) translateX(0);}
+	25% {transform:rotateY(-270deg) translateZ(150px) translateX(150px);}
+	50% {transform:rotateY(-360deg) translateZ(0) translateX(0);}
+	75% {transform:rotateY(-450deg) translateZ(150px) translateX(-150px);}
+	100% {transform:rotateY(-540deg) translateZ(300px) translateX(0);}
+}
+@keyframes threeMove{
+	0% {transform:rotateY(-270deg) translateZ(150px) translateX(150px);}
+	25% {transform:rotateY(-360deg) translateZ(0) translateX(0);}
+	50% {transform:rotateY(-450deg) translateZ(150px) translateX(-150px);}
+	75% {transform:rotateY(-540deg) translateZ(300px) translateX(0);}
+	100% {transform:rotateY(-630deg) translateZ(150px) translateX(150px);}
+}
+@keyframes fourMove{
+	0% {transform:rotateX(90deg) rotateZ(0) translateX(0) translateY(-150px) translateZ(150px);}
+	25% {transform:rotateX(90deg) rotateZ(90deg) translateX(-150px) translateY(0) translateZ(150px);}
+	50% {transform:rotateX(90deg) rotateZ(180deg) translateX(0) translateY(150px) translateZ(150px);}
+	75% {transform:rotateX(90deg) rotateZ(270deg) translateX(150px) translateY(0) translateZ(150px);}
+	100% {transform:rotateX(90deg) rotateZ(360deg) translateX(0) translateY(-150px) translateZ(150px);}
+}
+@keyframes fiveMove{
+	0% {transform:rotateX(-90deg) rotateZ(0) translateX(0px) translateZ(150px) translateY(150px);}
+	25% {transform:rotateX(-90deg) rotateZ(-90deg) translateX(-150px) translateZ(150px) translateY(0);}
+	50% {transform:rotateX(-90deg) rotateZ(-180deg) translateX(0) translateZ(150px) translateY(-150px);}
+	75% {transform:rotateX(-90deg) rotateZ(-270deg) translateX(150px) translateZ(150px) translateY(0);}
+	100% {transform:rotateX(-90deg) rotateZ(-360deg) translateX(0) translateZ(150px) translateY(150px);}
+}
+	</style>
+	<body>
+		<ul>
+			<li class="six">6</li>
+			<li class="five">5</li>
+			<li class="four">4</li>
+			<li class="three">3</li>
+			<li class="two">2</li>
+			<li class="one">1</li>
+		</ul>
+	</body>
+</html>
