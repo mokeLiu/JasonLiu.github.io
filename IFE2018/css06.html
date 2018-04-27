@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="Author" content="Jason">
+		<title>利用 CSS animation 制作一个炫酷的 Slider</title>
+	</head>
+	<style>
+*{margin:0;padding:0;}
+body{width:100%;height:100%;background-color:#000;}
+div{
+	width:600px;height:600px;
+	overflow:hidden;
+	position:absolute;
+	top:50%;left:50%;
+	margin:-300px 0 0 -300px;
+	background:url(./images/pic.jpg) no-repeat;
+	background-size:100% 100%;
+}
+div ul{
+	width:550px;height:100px;
+	margin:0 auto;
+	margin-top:480px;
+}
+div ul li{
+	width:100px;height:100px;
+	margin:0 4px;
+	float:left;
+	list-style:none;
+}
+div ul li p{
+	width:100px;height:100px;
+	position:relative;
+	z-index:100;
+	border:1px solid #eee;
+}
+div ul li p span{
+	width:100%;height:100%;
+	background-color:rgba(80,80,80,.3);
+	position:absolute;
+	display:block;
+	top:0;left:0;
+}
+div ul li:hover{
+	cursor:pointer;
+}
+div ul li:hover p span{
+	display:none;
+}
+div ul li img{
+	width:100%;height:100%;
+}
+div ul li img.big{
+	position:absolute;
+	z-index:-1;
+	top:0;left:0;
+	display:none;
+}
+@keyframes anim0{
+	from {left:-500px;}
+	to {left:0;}
+}
+@keyframes anim1{
+	from {top:350px;}
+	to {top:0;}
+}
+@keyframes anim2{
+	from {transform:scale(0.1);}
+	to {transform:scale(1.0);}
+}
+@keyframes anim3{
+	from {transform:scale(2.0);}
+	to {transform:scale(1.0);}
+}
+@keyframes anim4{
+	from {transform:rotateZ(-360deg) scale(0.1);}
+	to {transform:rotateZ(0) scale(1.0);}
+}
+	</style>
+	<body>
+		<div>
+			<ul>
+				<li>
+					<p>
+						<span></span>
+						<img class="small" src="./images/pic.jpg" />
+					</p>
+					<img class="big" src="./images/pic.jpg" />
+				</li>
+				<li>
+					<p>
+						<span></span>
+						<img class="small" src="./images/pic.jpg" />
+					</p>
+					<img class="big" src="./images/pic.jpg" />
+				</li>
+				<li>
+					<p>
+						<span></span>
+						<img class="small" src="./images/pic.jpg" />
+					</p>
+					<img class="big" src="./images/pic.jpg" />
+				</li>
+				<li>
+					<p>
+						<span></span>
+						<img class="small" src="./images/pic.jpg" />
+					</p>
+					<img class="big" src="./images/pic.jpg" />
+				</li>
+				<li>
+					<p>
+						<span></span>
+						<img class="small" src="./images/pic.jpg" />
+					</p>
+					<img class="big" src="./images/pic.jpg" />
+				</li>
+			</ul>
+		</div>
+	</body>
+	<script>
+window.onload = function(){
+	var aLi = document.getElementsByTagName('li');
+	var imgs = document.getElementsByTagName('img');
+	var aImg = [];
+	for(var i=0;i<imgs.length;i++){
+		if(imgs[i].className === 'big'){
+			aImg.push(imgs[i]);
+		}
+	}
+	var prev = aImg[0];
+	var hide = null;
+	for(var i=0;i<aLi.length;i++){
+		aLi[i].i = i;
+		aLi[i].onmouseup = aLi[i].ontouchend = function(){
+			var i = this.i;
+			if(hide){
+				hide.style.display = "none";
+			}
+			prev.style.zIndex = 1;
+			aImg[i].style.zIndex = 2;
+			aImg[i].style.display = "block";
+			aImg[i].style.animation = "anim"+ i +" .5s ease-out forwards";
+			hide = prev;
+			prev = aImg[i];
+		}; 
+	}
+}
+	</script>
+</html>
