@@ -31,7 +31,7 @@ div ul li{
 div ul li p{
 	width:100px;height:100px;
 	position:relative;
-	z-index:100;
+	z-index:20;
 	border:1px solid #eee;
 }
 div ul li p span{
@@ -128,21 +128,22 @@ window.onload = function(){
 			aImg.push(imgs[i]);
 		}
 	}
-	var prev = aImg[0];
-	var hide = null;
+	var prev = null;
+	var anims = ["anim0 .5s ease-out forwards", "anim1 .5s ease-out forwards", "anim2 1s ease-in forwards", "anim3 1s ease-out forwards", "anim4 .7s ease-in-out forwards"];
 	for(var i=0;i<aLi.length;i++){
 		aLi[i].i = i;
 		aLi[i].onmouseup = aLi[i].ontouchend = function(){
-			var i = this.i;
-			if(hide && hide!==prev){
-				hide.style.display = "none";
+			if(prev !== aImg[this.i]){
+				var now = aImg[this.i];
+				for(var i=0;i<aImg.length;i++){
+					aImg[i].style.display = "none";
+					aImg[i].style.zIndex = 5;
+				}
+				now.style.display = "block";
+				now.style.zIndex = 10;
+				now.style.animation = anims[this.i];
+				prev = now;
 			}
-			prev.style.zIndex = 1;
-			aImg[i].style.zIndex = 2;
-			aImg[i].style.display = "block";
-			aImg[i].style.animation = "anim"+ i +" .5s ease-out forwards";
-			hide = prev;
-			prev = aImg[i];
 		}; 
 	}
 }
