@@ -134,7 +134,7 @@ window.onload = function(){
 		aLi[i].i = i;
 		aLi[i].onmouseup = aLi[i].ontouchend = function(){
 			var i = this.i;
-			if(hide){
+			if(hide && hide!==prev){
 				hide.style.display = "none";
 			}
 			prev.style.zIndex = 1;
