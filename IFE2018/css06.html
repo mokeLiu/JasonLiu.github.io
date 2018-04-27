@@ -14,7 +14,7 @@ div{
 	position:absolute;
 	top:50%;left:50%;
 	margin:-300px 0 0 -300px;
-	background:url(./images/pic.jpg) no-repeat;
+	background:url(./images/00.jpg) no-repeat;
 	background-size:100% 100%;
 }
 div ul{
@@ -52,7 +52,6 @@ div ul li img{
 }
 div ul li img.big{
 	position:absolute;
-	z-index:-1;
 	top:0;left:0;
 	display:none;
 }
@@ -83,37 +82,37 @@ div ul li img.big{
 				<li>
 					<p>
 						<span></span>
-						<img class="small" src="./images/pic.jpg" />
+						<img class="small" src="./images/00.jpg" />
 					</p>
-					<img class="big" src="./images/pic.jpg" />
+					<img class="big" src="./images/00.jpg" />
 				</li>
 				<li>
 					<p>
 						<span></span>
-						<img class="small" src="./images/pic.jpg" />
+						<img class="small" src="./images/01.jpg" />
 					</p>
-					<img class="big" src="./images/pic.jpg" />
+					<img class="big" src="./images/01.jpg" />
 				</li>
 				<li>
 					<p>
 						<span></span>
-						<img class="small" src="./images/pic.jpg" />
+						<img class="small" src="./images/02.jpg" />
 					</p>
-					<img class="big" src="./images/pic.jpg" />
+					<img class="big" src="./images/02.jpg" />
 				</li>
 				<li>
 					<p>
 						<span></span>
-						<img class="small" src="./images/pic.jpg" />
+						<img class="small" src="./images/03.jpg" />
 					</p>
-					<img class="big" src="./images/pic.jpg" />
+					<img class="big" src="./images/03.jpg" />
 				</li>
 				<li>
 					<p>
 						<span></span>
-						<img class="small" src="./images/pic.jpg" />
+						<img class="small" src="./images/04.jpg" />
 					</p>
-					<img class="big" src="./images/pic.jpg" />
+					<img class="big" src="./images/04.jpg" />
 				</li>
 			</ul>
 		</div>
@@ -128,17 +127,20 @@ window.onload = function(){
 			aImg.push(imgs[i]);
 		}
 	}
-	var prev = null;
+	var prev = aImg[0];
 	var anims = ["anim0 .5s ease-out forwards", "anim1 .5s ease-out forwards", "anim2 1s ease-in forwards", "anim3 1s ease-out forwards", "anim4 .7s ease-in-out forwards"];
 	for(var i=0;i<aLi.length;i++){
 		aLi[i].i = i;
 		aLi[i].onmouseup = aLi[i].ontouchend = function(){
-			if(prev !== aImg[this.i]){
+			if(prev!==aImg[this.i]){
 				var now = aImg[this.i];
-				for(var i=0;i<aImg.length;i++){
-					aImg[i].style.display = "none";
-					aImg[i].style.zIndex = 5;
+				for(var j=0;j<aImg.length;j++){
+					if(prev!==aImg[j]){
+						aImg[j].style.display = "none";
+						aImg[j].style.zIndex = 1;
+					}
 				}
+				prev.style.zIndex = 5;
 				now.style.display = "block";
 				now.style.zIndex = 10;
 				now.style.animation = anims[this.i];
