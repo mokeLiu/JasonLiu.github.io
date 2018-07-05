@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+*{margin:0;padding:0;}
+html, body{
+	width: 100%;
+	height: 100%;
+	background-color: black;
+}
+div{
+	width: 800px;
+	height: 500px;
+	margin: 0 auto;
+	position: absolute;
+	top: 50%;left: 50%;
+	margin-top: -250px;
+	margin-left: -400px;
+}
+		</style>
+	</head>
+	<body>
+		<div>
+			<canvas id="can"></canvas>
+		</div>
+	</body>
+	<script>
+window.onload = function(){
+	var can = document.getElementById("can");
+	var cxt = can.getContext("2d");
+	can.width = 800;
+	can.height = 500;
+	cxt.save();
+	cxt.fillStyle = "green";
+	cxt.fillRect(0, 0, 800, 500);
+	cxt.strokeStyle = "white";
+	cxt.lineWidth = "2";
+	//整体轮廓
+	cxt.strokeRect(35, 10, 730, 480);
+	cxt.moveTo(40, 10);
+	cxt.arc(35, 10, 5, 0, Math.PI/2);
+	cxt.moveTo(40, 490);
+	cxt.arc(35, 490, 5, 0, -Math.PI/2, true);
+	cxt.moveTo(765, 15);
+	cxt.arc(765, 10, 5, Math.PI/2, Math.PI);
+	cxt.moveTo(765, 490);
+	cxt.arc(765, 490, 5, Math.PI, Math.PI*3/2);
+	//左半场
+	cxt.strokeRect(35, 105, 115, 280);
+	cxt.strokeRect(35, 180, 40, 140);
+	cxt.strokeRect(25, 225, 10, 50);
+	cxt.moveTo(150, 250);
+	cxt.arc(110, 250, 70, -Math.PI*4/13, Math.PI*4/13);
+	cxt.moveTo(110, 250);
+	cxt.arc(110, 250, 1, 0, 2*Math.PI);
+	//中线
+	cxt.moveTo(400, 10);
+	cxt.lineTo(400, 490);
+	cxt.moveTo(470, 250);
+	cxt.arc(400, 250, 70, 0, 2*Math.PI);
+	cxt.moveTo(400, 250);
+	cxt.arc(400, 250, 1, 0, 2*Math.PI);
+	//右半场
+	cxt.strokeRect(650, 105, 115, 280);
+	cxt.strokeRect(725, 180, 40, 140);
+	cxt.strokeRect(765, 225, 10, 50);
+	cxt.moveTo(650, 200);
+	cxt.arc(690, 250, 70, Math.PI*9/13, Math.PI*17/13);
+	cxt.moveTo(690, 250);
+	cxt.arc(690, 250, 1, 0, 2*Math.PI)
+	cxt.stroke();
+	cxt.restore();
+}
+var reqAnim = (function() {
+	var lastTime = 0;
+	var vendors = ['ms', 'moz', 'webkit', 'o'];
+	for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+								   || window[vendors[x]+'CancelRequestAnimationFrame'];
+	}
+ 
+	if (!window.requestAnimationFrame)
+		window.requestAnimationFrame = function(callback, element) {
+			var currTime = new Date().getTime();
+			var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+			  timeToCall);
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+ 
+	if (!window.cancelAnimationFrame)
+		window.cancelAnimationFrame = function(id) {
+			clearTimeout(id);
+		};
+}());
+	</script>
+</html>
