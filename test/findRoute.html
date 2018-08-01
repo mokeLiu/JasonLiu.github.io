@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+*{margin: 0;padding: 0;}
+html, body{width: 100%;height: 100%;}
+ul{
+	position: absolute;
+	top: 50%;left: 50%;
+	border-top: 1px solid gray;
+	border-left: 1px solid gray;
+}
+li{
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+	list-style: none;
+	float: left;
+	text-align: center;
+	color: white;
+	font-size: 10px;
+}
+		</style>
+	</head>
+	<body>
+		
+	</body>
+	<script>
+window.onload = function () {
+	var maze = new myMaze();
+	maze.init(document.body, 30, 35, true);
+	var sel = ("ontouchend" in document) ? "ontouchend" : "onmouseup";
+	document.body[sel] = function (ev) {
+		if(!maze.getRoute && !ev.target.num){
+			//将开始与结束倒置，使得路径易于描绘
+			if(maze.end){
+				maze.start = ev.target;
+				maze.start.style.background = "red";
+				maze.start.innerHTML = "璐";
+			} else {
+				maze.end = ev.target;
+				maze.end.style.background = "blue";
+				maze.end.innerHTML = "生";
+			}
+			if(maze.start){
+				maze.getRoute = true;
+				maze.findRoute();
+			}
+		}
+	}
+}
+function myMaze(){}
+var mp = myMaze.prototype;
+mp.init = function (obj, width, height, direct) {
+	var W = obj.offsetWidth;
+	var H = obj.offsetHeight;
+	this.direct = direct;
+	this.a = Math.floor(W > H ? H*0.8/height : W*0.9/width);
+	this.width = width;
+	this.height = height;
+	this.obj = obj;
+	this.makeMaze();
+}
+
+mp.mapArr = [];
+mp.openArr = [];
+mp.start = null;
+mp.end = null;
+mp.getRoute = false;
+mp.route = [];
+
+mp.makeMaze = function () {
+	var ul = document.createElement("ul");
+	var x = this.width;
+	var y = this.height;
+	var w = (this.a+1)*x;
+	var h = (this.a+1)*y;
+	ul.style.width = w +"px";
+	ul.style.height = h +"px";
+	ul.style.marginLeft = -w/2 +"px";
+	ul.style.marginTop = -h/2 +"px";
+	for (var i=0;i<y;i++) {
+		this.mapArr[i] = [];
+		for (var j=0;j<x;j++) {
+			var li = document.createElement("li");
+			li.x = j;
+			li.y = i;
+			li.num = Math.random()>0.25 ? 0 : 5;
+			var ls = li.style;
+			ls.width = ls.height = ls.lineHeight = this.a +"px";
+			ls.background = li.num ? "gray" : "";
+			ul.appendChild(li);
+			this.mapArr[i].push(li);
+		}
+	}
+	this.obj.appendChild(ul);
+}
+mp.aStar = function () {
+	this.openArr.push(this.start);
+	this.start.G = 0;
+	this.start.F = Math.abs(this.start.x-this.end.x)*10 + Math.abs(this.start.y-this.end.y)*10;
+	while(this.openArr.length){
+		var now = this.getMinFNode();
+		this.removeFromOpen(now);
+		this.getNeighbors(now);
+		if(this.inArray(this.end)){
+			return true;
+		}
+	}
+	return false;
+}
+mp.getNeighbors = function (now) {
+	// 左上、左、左下
+	if (now.x-1>=0) {
+		var l = this.mapArr[now.y][now.x-1];
+		if(l.num===0) {
+			l.pNode = now;
+			l.num = 1;
+			this.getF(l);
+			this.openArr.push(l);
+		}
+		if(!this.direct){
+			if (now.y-1>=0) {
+				var lt = this.mapArr[now.y-1][now.x-1];
+				if(lt.num===0) {
+					lt.num = 1;
+					lt.pNode = now;
+					this.openArr.push(lt);
+					this.getF(lt);
+				}
+			}
+			if (now.y+1<this.height) {
+				var lb = this.mapArr[now.y+1][now.x-1];
+				if(lb.num===0) {
+					lb.pNode = now;
+					lb.num = 1;
+					this.getF(lb);
+					this.openArr.push(lb);
+				}
+			}
+		}
+	}
+	// 上
+	if (now.y-1>0) {
+		var t = this.mapArr[now.y-1][now.x];
+		if(t.num===0) {
+			t.pNode = now;
+			t.num = 1;
+			this.getF(t);
+			this.openArr.push(t);
+		}
+	}
+	// 右上、右、右下
+	if (now.x+1<this.width) {
+		var r = this.mapArr[now.y][now.x+1];
+		if(r.num===0) {
+			r.pNode = now;
+			r.num = 1;
+			this.getF(r);
+			this.openArr.push(r);
+		}
+		if(!this.direct){
+			if (now.y-1>=0) {
+				var rt = this.mapArr[now.y-1][now.x+1];
+				if(rt.num===0) {
+					rt.pNode = now;
+					rt.num = 1;
+					this.getF(rt);
+					this.openArr.push(rt);
+				}
+			}
+			if (now.y+1<this.height) {
+				var rb = this.mapArr[now.y+1][now.x+1];
+				if(rb.num===0) {
+					rb.pNode = now;
+					rb.num = 1;
+					this.getF(rb);
+					this.openArr.push(rb);
+				}
+			}
+		}
+	}
+	// 下
+	if (now.y+1<this.height) {
+		var b = this.mapArr[now.y+1][now.x];
+		if(b.num===0) {
+			b.pNode = now;
+			b.num = 1;
+			this.getF(b);
+			this.openArr.push(b);
+		}
+	}
+}
+mp.getF = function (node) {
+	var dx = Math.abs(node.x-node.pNode.x);
+	var dy = Math.abs(node.y-node.pNode.y);
+	node.G = node.pNode.G + ((dx && dy) ? 14 : 10);
+	node.F = node.G + Math.abs(node.x-this.end.x)*10 + Math.abs(node.y-this.end.y)*10;
+}
+mp.getMinFNode = function (now) {
+	var minNode = this.openArr[0];
+	for(var i=1,len=this.openArr.length;i<len;i++){
+		if(minNode.F>this.openArr[i].F){
+			minNode = this.openArr[i];
+		}
+	}
+	return minNode;
+}
+mp.removeFromOpen = function (node) {
+	var arr = this.openArr;
+	for (var i=0,len=arr.length;i<len;i++) {
+		if(node === arr[i]){
+			node.num = 2;
+			arr.splice(i, 1);
+		}
+	}
+}
+mp.inArray = function () {
+	for (var i=0, len=this.openArr.length;i<len;i++) {
+		if (this.openArr[i]===this.end) {
+			return true;
+		}
+	}
+	return false;
+}
+mp.findRoute = function () {
+	if(this.aStar()){
+		var node = this.end.pNode;
+		while (node!==this.start) {
+			this.route.push(node);
+			node = node.pNode;
+		}
+	}
+	var i = 0, len = this.route.length;
+	var _this = this;
+	this.timer = setInterval(function () {
+		_this.route[i].style.background = "yellow";
+		i<len ? i++ : clearInterval(_this.timer);
+	}, 200);
+}
+	</script>
+</html>
