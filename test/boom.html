@@ -7,6 +7,12 @@
 		<style>
 *{margin: 0;padding: 0;}
 html, body{width: 100%;height: 100%;}
+input{
+	position: absolute;
+	top: 10px;left: 45%;
+	margin: 0 auto;
+	display: block;
+}
 ul{
 	position: absolute;
 	top: 50%;left: 50%;
@@ -54,6 +60,9 @@ li.num7{
 li.num8{
 	color: black;
 }
+li.flag{
+	background-color: green;
+}
 		</style>
 	</head>
 	<body>
@@ -62,19 +71,22 @@ li.num8{
 	<script>
 window.onload = function () {
 	var maze = new myMaze();
-	maze.init(document.body, 10, 10);
+	maze.init(document.body, 10, 10, 10);
 }
 function myMaze(){}
 var mp = myMaze.prototype;
 mp.mapArr = [];
 mp.judgeArr = [];
 mp.boomArr = [];
-mp.times = 0;
-mp.init = function (obj, width, height) {
+mp.boomNum = 0;
+mp.flagNum = 0;
+this.onOff = false;
+mp.init = function (obj, width, height, limit) {
 	var W = obj.offsetWidth;
 	var H = obj.offsetHeight;
 	this.width = width+2;
 	this.height = height+2;
+	this.limit = limit;
 	this.a = Math.floor(W > H ? H*0.8/this.height : W*0.9/this.width);
 	this.obj = obj;
 	this.makeMaze();
@@ -83,15 +95,25 @@ mp.init = function (obj, width, height) {
 	var _this = this;
 	this.ul[sel] = function (ev) {
 		var ev = ev || event;
-		var a = ev.target;
-		if (ev.target.num===0) {
-			_this.judgeNeighbors(ev.target);
-		}
-		if (ev.target.num===1) {
-			for (var i=0,len=_this.boomArr.length;i<len;i++) {
-				_this.boomArr[i].className = "boom";
+		var targ = ev.target;
+		if (_this.onOff) {
+			if (!targ.className && _this.flagNum<_this.limit) {
+				targ.className = "flag";
+				_this.flagNum++;
+			} else if (targ.className==="flag") {
+				targ.className = "";
+				_this.flagNum--;
 			}
-			_this.ul[sel] = null;
+		} else {
+			if (targ.num===0) {
+				_this.judgeNeighbors(targ);
+			}
+			if (targ.num===1) {
+				for (var i=0,len=_this.boomArr.length;i<len;i++) {
+					_this.boomArr[i].className = "boom";
+				}
+				_this.ul[sel] = null;
+			}
 		}
 	}
 }
@@ -111,9 +133,12 @@ mp.makeMaze = function () {
 			var li = document.createElement("li");
 			li.x = j;
 			li.y = i;
-			li.num = (li.x===0 || li.y===0 || li.x===this.width-1 || li.y === this.height-1) ? -1 : (Math.random()<0.3 ? 1 : 0);
+			li.num = (li.x===0 || li.y===0 || li.x===this.width-1 || li.y === this.height-1) ? -1 : ((Math.random()<0.3 && this.boomNum<this.limit) ? 1 : 0);
 			li.className = li.num===-1 ? "wall" : "";
-			li.num===1 ? this.boomArr.push(li) : null;
+			if (li.num===1) {
+				this.boomArr.push(li);
+				this.boomNum++;
+			}
 			var ls = li.style;
 			ls.width = ls.height = ls.lineHeight = this.a +"px";
 			ul.appendChild(li);
@@ -121,6 +146,7 @@ mp.makeMaze = function () {
 		}
 	}
 	this.obj.appendChild(ul);
+	this.addBtn();
 	this.ul = ul;
 }
 mp.judgeMap = function () {
@@ -166,7 +192,7 @@ mp.judgeNeighbors = function (item) {
 	}
 }
 mp.showEmpty = function (item) {
-	if (!this.inJudgeArr(item) && !item.num && !item.innerHTML) {
+	if (!this.inJudgeArr(item) && !item.num && !item.innerHTML && !item.className) {
 		item.className = "num num"+item.booms;
 		item.innerHTML = item.booms;
 		item.num = 2;
@@ -180,6 +206,22 @@ mp.inJudgeArr = function (item) {
 		}
 	}
 	return false;
+}
+mp.addBtn = function () {
+	var sel = ("ontouchend" in document) ? "ontouchend" : "onmouseup";
+	var btn = document.createElement("input");
+	btn.type = "button";
+	btn.value = "扫雷模式";
+	var _this = this;
+	btn[sel] = function () {
+		if(_this.onOff){
+			btn.value = "扫雷模式";
+		}else{
+			btn.value = "插旗模式";
+		}
+		_this.onOff = !_this.onOff;
+	}
+	this.obj.appendChild(btn);
 }
 	</script>
 </html>
