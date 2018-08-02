@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+*{margin: 0;padding: 0;}
+html, body{width: 100%;height: 100%;}
+ul{
+	position: absolute;
+	top: 50%;left: 50%;
+	border-top: 1px solid;
+	border-left: 1px solid;
+}
+li{
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+	list-style: none;
+	float: left;
+}
+li.wall{
+	background-color: gray;
+}
+		</style>
+	</head>
+	<body>
+		
+	</body>
+	<script>
+window.onload = function () {
+	var maze = new myMaze();
+	maze.init(document.body, 100, 70);
+}
+function myMaze(){}
+var mp = myMaze.prototype;
+mp.mapArr = [];
+mp.times = 0;
+mp.init = function (obj, width, height) {
+	var W = obj.offsetWidth;
+	var H = obj.offsetHeight;
+	this.a = Math.floor(W > H ? H*0.8/height : W*0.9/width);
+	this.width = width;
+	this.height = height;
+	this.obj = obj;
+	this.makeMaze();
+	var _this = this;
+	obj.onmouseup = function () {
+		if(_this.times<4){
+			_this.adjustMap();
+			_this.times++;
+		}
+	}
+}
+mp.makeMaze = function () {
+	var ul = document.createElement("ul");
+	var x = this.width;
+	var y = this.height;
+	var w = (this.a+1)*x;
+	var h = (this.a+1)*y;
+	ul.style.width = w +"px";
+	ul.style.height = h +"px";
+	ul.style.marginLeft = -w/2 +"px";
+	ul.style.marginTop = -h/2 +"px";
+	for (var i=0;i<y;i++) {
+		this.mapArr[i] = [];
+		for (var j=0;j<x;j++) {
+			var li = document.createElement("li");
+			li.x = j;
+			li.y = i;
+			li.num = (li.x===0 || li.y===0 || li.x===this.width-1 || li.y === this.height-1) ? 1 : (Math.random()<0.5 ? 1 : 0);
+			li.className = li.num ? "wall" : "";
+			var ls = li.style;
+			ls.width = ls.height = this.a +"px";
+			ul.appendChild(li);
+			this.mapArr[i].push(li);
+		}
+	}
+	this.obj.appendChild(ul);
+}
+mp.adjustMap = function () {
+	for (var i=1,lenY=this.mapArr.length-1;i<lenY;i++) {
+		for (var j=1,lenX=this.mapArr[0].length-1;j<lenX;j++) {
+			this.judgeItem(this.mapArr[i][j]);
+		}
+	}
+	this.renderMap();
+}
+mp.judgeItem = function (item) {
+	var count = 0;
+	var x = item.x, y = item.y;
+	// 左上、上、右上
+	this.mapArr[y-1][x-1].num ? count++ : null;
+	this.mapArr[y-1][x].num ? count++ : null;
+	this.mapArr[y-1][x+1].num ? count++ : null;
+	// 左下、下、右下
+	this.mapArr[y+1][x-1].num ? count++ : null;
+	this.mapArr[y+1][x].num ? count++ : null;
+	this.mapArr[y+1][x+1].num ? count++ : null;
+	// 左、右
+	this.mapArr[y][x-1].num ? count++ : null;
+	this.mapArr[y][x+1].num ? count++ : null;
+	
+	item.after = item.num ? (count>=4 ? 1 : 0) : (count>=5 ? 1 : 0);
+}
+mp.renderMap = function () {
+	for (var i=0,lenY=this.mapArr.length;i<lenY;i++) {
+		for (var j=0,lenX=this.mapArr[0].length;j<lenX;j++) {
+			var item = this.mapArr[i][j];
+			item.num = item.after;
+			item.className = item.num ? "wall" : "";
+		}
+	}
+}
+	</script>
+</html>

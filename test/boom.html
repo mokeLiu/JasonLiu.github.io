@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1, width=device-width">
+		<title></title>
+		<style>
+*{margin: 0;padding: 0;}
+html, body{width: 100%;height: 100%;}
+ul{
+	position: absolute;
+	top: 50%;left: 50%;
+	border-top: 1px solid;
+	border-left: 1px solid;
+}
+li{
+	border-right: 1px solid gray;
+	border-bottom: 1px solid gray;
+	list-style: none;
+	float: left;
+	text-align: center;
+	font-weight: bold;
+}
+li.wall{
+	background-color: gray;
+}
+li.boom{
+	background-color: red;
+}
+li.num{
+	background-color: #c0c0c0;
+}
+li.num1{
+	color: blue;
+}
+li.num2{
+	color: green;
+}
+li.num3{
+	color: red;
+}
+li.num4{
+	color: purple;
+}
+li.num5{
+	color: olive;
+}
+li.num6{
+	color: orange;
+}
+li.num7{
+	color: yellow;
+}
+li.num8{
+	color: black;
+}
+		</style>
+	</head>
+	<body>
+		
+	</body>
+	<script>
+window.onload = function () {
+	var maze = new myMaze();
+	maze.init(document.body, 10, 10);
+}
+function myMaze(){}
+var mp = myMaze.prototype;
+mp.mapArr = [];
+mp.judgeArr = [];
+mp.boomArr = [];
+mp.times = 0;
+mp.init = function (obj, width, height) {
+	var W = obj.offsetWidth;
+	var H = obj.offsetHeight;
+	this.width = width+2;
+	this.height = height+2;
+	this.a = Math.floor(W > H ? H*0.8/this.height : W*0.9/this.width);
+	this.obj = obj;
+	this.makeMaze();
+	this.judgeMap();
+	var sel = ("ontouchend" in document) ? "ontouchend" : "onmouseup";
+	var _this = this;
+	this.ul[sel] = function (ev) {
+		var ev = ev || event;
+		var a = ev.target;
+		if (ev.target.num===0) {
+			_this.judgeNeighbors(ev.target);
+		}
+		if (ev.target.num===1) {
+			for (var i=0,len=_this.boomArr.length;i<len;i++) {
+				_this.boomArr[i].className = "boom";
+			}
+			_this.ul[sel] = null;
+		}
+	}
+}
+mp.makeMaze = function () {
+	var ul = document.createElement("ul");
+	var x = this.width;
+	var y = this.height;
+	var w = (this.a+1)*x;
+	var h = (this.a+1)*y;
+	ul.style.width = w +"px";
+	ul.style.height = h +"px";
+	ul.style.marginLeft = -w/2 +"px";
+	ul.style.marginTop = -h/2 +"px";
+	for (var i=0;i<y;i++) {
+		this.mapArr[i] = [];
+		for (var j=0;j<x;j++) {
+			var li = document.createElement("li");
+			li.x = j;
+			li.y = i;
+			li.num = (li.x===0 || li.y===0 || li.x===this.width-1 || li.y === this.height-1) ? -1 : (Math.random()<0.3 ? 1 : 0);
+			li.className = li.num===-1 ? "wall" : "";
+			li.num===1 ? this.boomArr.push(li) : null;
+			var ls = li.style;
+			ls.width = ls.height = ls.lineHeight = this.a +"px";
+			ul.appendChild(li);
+			this.mapArr[i].push(li);
+		}
+	}
+	this.obj.appendChild(ul);
+	this.ul = ul;
+}
+mp.judgeMap = function () {
+	for (var i=1,lenY=this.mapArr.length-1;i<lenY;i++) {
+		for (var j=1,lenX=this.mapArr[0].length-1;j<lenX;j++) {
+			this.judgeItem(this.mapArr[i][j]);
+		}
+	}
+}
+mp.judgeItem = function (item) {
+	if (item.num===0) {
+		var count = 0;
+		var x = item.x, y = item.y;
+		// 左上、上、右上
+		this.mapArr[y-1][x-1].num===1 ? count++ : null;
+		this.mapArr[y-1][x].num===1 ? count++ : null;
+		this.mapArr[y-1][x+1].num===1 ? count++ : null;
+		// 左下、下、右下
+		this.mapArr[y+1][x-1].num===1 ? count++ : null;
+		this.mapArr[y+1][x].num===1 ? count++ : null;
+		this.mapArr[y+1][x+1].num===1 ? count++ : null;
+		// 左、右
+		this.mapArr[y][x-1].num===1 ? count++ : null;
+		this.mapArr[y][x+1].num===1 ? count++ : null;
+		
+		item.booms = count;
+	}
+}
+mp.judgeNeighbors = function (item) {
+	this.showEmpty(item);
+	while (this.judgeArr.length) {
+		for (var i=0;i<this.judgeArr.length;i++) {
+			var now = this.judgeArr[i];
+			this.judgeArr.splice(i, 1);
+			var x = now.x, y = now.y;
+			// 上、下
+			this.mapArr[y-1][x].num===0 ? this.showEmpty(this.mapArr[y-1][x]) : null;
+			this.mapArr[y+1][x].num===0 ? this.showEmpty(this.mapArr[y+1][x]) : null;
+			// 左、右
+			this.mapArr[y][x-1].num===0 ? this.showEmpty(this.mapArr[y][x-1]) : null;
+			this.mapArr[y][x+1].num===0 ? this.showEmpty(this.mapArr[y][x+1]) : null;
+		}
+	}
+}
+mp.showEmpty = function (item) {
+	if (!this.inJudgeArr(item) && !item.num && !item.innerHTML) {
+		item.className = "num num"+item.booms;
+		item.innerHTML = item.booms;
+		item.num = 2;
+		this.judgeArr.push(item);
+	}
+}
+mp.inJudgeArr = function (item) {
+	for (var i=0,len=this.judgeArr.length;i<len;i++) {
+		if (item===this.judgeArr[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+	</script>
+</html>
