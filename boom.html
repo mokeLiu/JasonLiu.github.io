@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>扫雷</title>
+	<style type="text/css">
+		*{margin: 0;padding: 0;}
+		html, body{width: 100%;height: 100%;}
+		h3{
+			text-align: center;
+		}
+		#game_holder{}
+		#game_holder ul{
+			position: relative;
+			border-left: 1px solid #787A75;
+			border-top: 1px solid #787A75;
+			left: 50%;
+		}
+		#game_holder ul li{
+			float: left;
+			list-style: none;
+			border-top: 3px ridge #FFFAFD;
+			border-left: 3px ridge #FFFAFD;
+			border-right: 3px ridge #787A75;
+			border-bottom: 3px ridge #787A75;
+			border-radius: 4px;
+			background-color: #ABA8AA;
+			text-align: center;
+			font-size: 25px;
+			font-weight: bold;
+		}
+		#game_holder ul li.cls{
+			border: 2px solid #919191;
+			background-color: #C3C0BB;
+			border-radius: 1px;
+		}
+		#game_holder ul li.cls1{color: #0806B0;}
+		#game_holder ul li.cls2{color: #0A6B02;}
+		#game_holder ul li.cls3{color: #BD131B;}
+		#game_holder ul li.cls4{color: #08095A;}
+		#game_holder ul li.cls5{color: #450B0A;}
+		#game_holder ul li.cls6{color: #1D5E6A;}
+		#game_holder ul li.cls7{color: #050505;}
+		#game_holder ul li.cls8{color: #7B7B7B;}
+		#game_holder ul li.clsBoom{
+			background-color: #BF1F25;
+		}
+		.mask{
+			position: absolute;
+			top: 0; left: 0;
+			width: 100%; height: 100%;
+			z-index: 5;
+			background-color: rgba(40,41,35,.5);
+		}
+		.alertBox{
+			position: absolute;
+			z-index: 10;
+			top: 30%; left: 50%;
+			background-color: rgba(0, 0, 0, .5);
+			border: 2px solid;
+			border-radius: 10px;
+			font-size: 25px;
+			font-weight: bold;
+			text-align: center;
+		}
+		.reset{
+			position: absolute;
+			z-index: 10;
+			top: 50%; left: 50%;
+			background-color: rgba(0, 0, 0, .5);
+			border: 2px solid;
+			border-radius: 5px;
+			font-size: 18px;
+			text-align: center;
+			cursor: pointer;
+		}
+		.reset:hover{
+			font-size: 20px;
+		}
+	</style>
+</head>
+<body></body>
+</html>
+<script type="text/javascript">
+	window.onload = function(){
+		var body = document.body;
+		var g = new game(body, 10, 10);
+		g.init();
+	}
+
+	function game(body, num, boomNum){
+		document.oncontextmenu = function(e){
+			e.preventDefault();
+		}
+		this.body = body;
+
+		this.preSet();
+		
+		this.num = num;
+		this.boomNum = boomNum;
+		this.tileLeft = num*num;
+		this.openArray = [];
+		this.closeArray = [];
+		this.showArray = [];
+	}
+
+	game.prototype.preSet = function() {
+		this.head = document.createElement('h3');
+		this.oP = document.createElement('div');
+		this.oP.id = "game_holder";
+		this.footer = document.createElement('footer');
+		this.body.appendChild(this.head);
+		this.body.appendChild(this.oP);
+		this.body.appendChild(this.footer);
+	};
+
+	game.prototype.init = function() {
+		var W = this.body.offsetWidth;
+		var H = this.body.offsetHeight;
+		var A = W>H ? H*.7 : W*.8;
+		var a = Math.floor(A/this.num);
+		this.a = a;
+		this.head.style.height = this.footer.style.height = (H-this.num*a-10)/2 +'px';
+
+		var map = this.createMap();
+		var itemMap = [];
+
+		var ul = document.createElement('ul');
+		ul.style.width = ul.style.height = this.num*a +'px';
+		ul.style.marginLeft = -this.num*a/2 +'px';
+		for (var i = 0; i < this.num; i++) {
+			itemMap[i] = [];
+			for (var j = 0; j < this.num; j++) {
+				var li = document.createElement('li');
+				li.style.width = li.style.height = a-6 +'px';
+				li.style.lineHeight = a-6 +'px';
+				li.show = false;
+				li.num = map[i][j];
+				itemMap[i][j] = li;
+				li.x = j, li.y = i;
+				var _this = this;
+				li.onmouseup = function(e){
+					if (e.button === 2) {
+						if (!this.flag) {
+							this.flag = true;
+							this.style.color = '#D03430';
+							this.innerHTML = '✌';
+						} else {
+							this.flag = false;
+							this.innerHTML = '';
+						}
+					} else if (e.button === 0) {
+						_this.clickEvent(this);
+					}
+				}
+				ul.appendChild(li);
+			}
+		}
+		this.oP.appendChild(ul);
+		this.itemMap = itemMap;
+	};
+
+	game.prototype.createMap = function() {
+		var num = this.num, boomNum = this.boomNum;
+		var map = [];
+		for (var i = 0; i < num; i++) {
+			map[i] = [];
+			for (var j = 0; j < num; j++) {
+				map[i][j] = 0;
+			}
+		}
+		while(boomNum){
+			var randW = Math.floor(Math.random()*95%num);
+			var randH = Math.floor(Math.random()*61%num);
+			if(map[randH][randW] === 0){
+				map[randH][randW] = -1;
+				boomNum --;
+			}
+		}
+		for (var i = 0; i < num; i++) {
+			for (var j = 0; j < num; j++) {
+				if(map[i][j] !== -1){
+					map[i][j] = this.judge8Dir(j, i, map);
+				}
+			}
+		}
+		return map;
+	};
+
+	game.prototype.judge8Dir = function(x, y, map) {
+		var count = 0;
+		if(x-1 >= 0){
+			if (map[y][x-1] === -1) count++;
+			if (y-1 >= 0) {
+				if (map[y-1][x-1] === -1) count++;
+			}
+			if (y+1 < this.num) {
+				if (map[y+1][x-1] === -1) count++;
+			}
+		}
+		if(x+1 < this.num){
+			if (map[y][x+1] === -1) count++;
+			if (y-1 >= 0) {
+				if (map[y-1][x+1] === -1) count++;
+			}
+			if (y+1 < this.num) {
+				if (map[y+1][x+1] === -1) count++;
+			}
+		}
+		if (y+1 < this.num) {
+			if (map[y+1][x] === -1) count++;
+		}
+		if (y-1 >= 0) {
+			if (map[y-1][x] === -1) count++;
+		}
+		return count;
+	};
+
+	game.prototype.clickEvent = function(obj) {
+		if (!obj.show && !obj.flag) {
+			if (obj.num === -1) {
+				obj.style.width = obj.style.height = this.a-4 +'px';
+				obj.className = 'cls clsBoom';
+				obj.innerHTML = '💣';
+				this.gameOver();
+			} else if (obj.num === 0) {
+				this.getShowArray(obj);
+				obj.style.width = obj.style.height = this.a-4 +'px';
+				obj.className = 'cls';
+				if (this.showArray.length) {
+					for (var i = 0; i < this.showArray.length; i++) {
+						var item = this.showArray[i];
+						item.style.width = item.style.height = this.a-4 +'px';
+						if (item.num) {
+							item.className = 'cls cls'+item.num;
+							item.innerHTML = item.num;
+						} else {
+							item.className = 'cls';
+						}
+						item.show = true;
+					}
+					this.tileLeft -= this.showArray.length;
+					this.closeArray = [];
+					this.openArray = [];
+					this.showArray = [];
+				} else {
+					this.tileLeft -= 1;
+				}
+			} else {
+				obj.style.width = obj.style.height = this.a-4 +'px';
+				obj.className = 'cls cls'+obj.num;
+				obj.innerHTML = obj.num;
+
+				this.tileLeft -= 1;
+			}
+			obj.show = true;
+			// 胜利条件判断
+			if (this.tileLeft === this.boomNum) {
+				this.gameWin();
+			}
+		}
+	};
+
+	game.prototype.getShowArray = function(item) {
+		this.openArray.push(item);
+		while (this.openArray.length) {
+			for (var i = 0; i < this.openArray.length; i++) {
+				var now = this.openArray[i];
+				this.openArray.splice(i, 1);
+				if (!this.inArray(now, this.closeArray)) {
+					this.judge4Dir(now);
+					this.closeArray.push(now);
+				}
+			}
+		}
+	};
+
+	game.prototype.judge4Dir = function(item) {
+		var x = item.x, y = item.y;
+		var _this = this;
+		if (x-1 >= 0) {
+			var obj = this.itemMap[y][x-1];
+			judge(obj);
+			if (y-1 >= 0) {
+				var obj = this.itemMap[y-1][x-1];
+				judge(obj);
+			}
+			if (y+1 < this.num) {
+				var obj = this.itemMap[y+1][x-1];
+				judge(obj);
+			}
+		}
+		if (x+1 < this.num) {
+			var obj = this.itemMap[y][x+1];
+			judge(obj);
+			if (y-1 >= 0) {
+				var obj = this.itemMap[y-1][x+1];
+				judge(obj);
+			}
+			if (y+1 < this.num) {
+				var obj = this.itemMap[y+1][x+1];
+				judge(obj);
+			}
+		}
+		if (y-1 >= 0) {
+			var obj = this.itemMap[y-1][x];
+			judge(obj);
+		}
+		if (y+1 < this.num) {
+			var obj = this.itemMap[y+1][x];
+			judge(obj);
+		}
+
+		function judge(obj){
+			if (!obj.show && !_this.inArray(obj, _this.showArray)) {
+				_this.showArray.push(obj);
+				if(obj.num === 0 && !_this.inArray(obj, _this.closeArray) && !_this.inArray(obj, _this.openArray)){
+					_this.openArray.push(obj);
+				}
+			}
+		}
+	};
+
+	game.prototype.inArray = function(item, arr) {
+		for (var i = 0; i < arr.length; i++) {
+			if (arr[i] === item) {
+				return true;
+			}
+		}
+		return false;
+	};
+
+	game.prototype.alertBox = function(txt, bColor, color) {
+		var mask = document.createElement('div');
+		mask.className = 'mask';
+
+		var box = document.createElement('div');
+		box.className = 'alertBox';
+		box.innerHTML = txt;
+		var w = Math.floor(this.num*this.a*2/3);
+		box.style.width = w +'px';
+		box.style.lineHeight = this.a + 'px';
+		box.style.marginLeft = -w/2 +'px';
+		box.style.borderColor = bColor;
+		box.style.color = color;
+
+		var reset = document.createElement('div');
+		reset.className = 'reset';
+		reset.innerHTML = '再来一局';
+		reset.style.color = color;
+		reset.style.width = this.a*5/2 +'px';
+		reset.style.marginLeft = -this.a*5/4 +'px';
+		reset.style.lineHeight = this.a + 'px';
+		var _this = this;
+		reset.onmouseup = function(){
+			_this.body.innerHTML = '';
+			var g = new game(_this.body, 10, 10);
+			g.init();
+		}
+
+		this.body.appendChild(mask);
+		this.body.appendChild(box);
+		this.body.appendChild(reset);
+	};
+
+	game.prototype.gameOver = function() {
+		this.alertBox("游戏结束！", 'red', 'orange');
+	};
+
+	game.prototype.gameWin = function() {
+		for (var i = 0; i < this.num; i++) {
+			for (var j = 0; j < this.num; j++) {
+				if (!this.itemMap[i][j].show) {
+					this.itemMap[i][j].style.color = '#D03430';
+					this.itemMap[i][j].innerHTML = '✌';
+				}
+			}
+		}
+		this.alertBox("胜利！", 'lightgreen', 'yellow');
+	};
+</script>
