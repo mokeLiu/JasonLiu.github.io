@@ -2,11 +2,19 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1, userscalable=no, maximum-scale=1, minimum-scale=1">
-		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1">
+		<title>A* 寻路算法</title>
 		<style>
 *{margin: 0;padding: 0;}
 html, body{width: 100%;height: 100%;}
+h3{
+	height: 28px;
+	line-height: 28px;
+	text-align: center;
+}
+select{
+	background-color: yellow;
+}
 ul{
 	position: absolute;
 	top: 50%;left: 50%;
@@ -20,43 +28,56 @@ li{
 	float: left;
 	text-align: center;
 	color: white;
-	font-size: 10px;
+	font-size: 15px;
 }
 		</style>
 	</head>
 	<body>
-		
+		<h3>点击空白处设定始、终点，开始寻路</h3>
+		<h3>
+			<select id="way">
+				<option value=1>四向寻路</option>
+				<option value=0>八向寻路</option>
+			</select>
+		</h3>
 	</body>
 	<script>
 window.onload = function () {
+	var way = document.getElementById('way');
 	var maze = new myMaze();
-	maze.init(document.body, 30, 35, true);
-	var sel = ("ontouchend" in document) ? "ontouchend" : "onmouseup";
-	document.body[sel] = function (ev) {
-		if(!maze.getRoute && !ev.target.num){
+	maze.prepare(document.body, 50, 30, way);
+}
+var sel = ("ontouchend" in document) ? "ontouchend" : "onmouseup";
+function myMaze(){};
+var mp = myMaze.prototype;
+
+mp.prepare = function(obj, width, height, way){
+	this.init(obj, width, height);
+	var _this = this;
+	this.ul[sel] = function (ev) {
+		if(!_this.getRoute && !ev.target.num){
 			//将开始与结束倒置，使得路径易于描绘
-			if(maze.end){
-				maze.start = ev.target;
-				maze.start.style.background = "red";
-				maze.start.innerHTML = "璐";
+			if(_this.end){
+				_this.start = ev.target;
+				_this.start.style.background = "#DC4D41";
+				_this.start.innerHTML = "◈";
 			} else {
-				maze.end = ev.target;
-				maze.end.style.background = "blue";
-				maze.end.innerHTML = "生";
+				_this.end = ev.target;
+				_this.end.style.background = "#1BA160";
+				_this.end.innerHTML = "※";
 			}
-			if(maze.start){
-				maze.getRoute = true;
-				maze.findRoute();
+			if(_this.start){
+				_this.direct = way.value;
+				_this.getRoute = true;
+				_this.findRoute();
 			}
 		}
 	}
 }
-function myMaze(){}
-var mp = myMaze.prototype;
-mp.init = function (obj, width, height, direct) {
+
+mp.init = function (obj, width, height) {
 	var W = obj.offsetWidth;
 	var H = obj.offsetHeight;
-	this.direct = direct;
 	this.a = Math.floor(W > H ? H*0.8/height : W*0.9/width);
 	this.width = width;
 	this.height = height;
@@ -73,6 +94,7 @@ mp.route = [];
 
 mp.makeMaze = function () {
 	var ul = document.createElement("ul");
+	this.ul = ul;
 	var x = this.width;
 	var y = this.height;
 	var w = (this.a+1)*x;
@@ -87,16 +109,21 @@ mp.makeMaze = function () {
 			var li = document.createElement("li");
 			li.x = j;
 			li.y = i;
-			li.num = Math.random()>0.25 ? 0 : 5;
+			if (i === 0 || i === y-1 || j === 0 || j === x-1) {
+				li.num = 5;
+			} else {
+				li.num = Math.random()>0.25 ? 0 : 5;
+			}
 			var ls = li.style;
 			ls.width = ls.height = ls.lineHeight = this.a +"px";
-			ls.background = li.num ? "gray" : "";
+			ls.background = li.num ? "#555" : "";
 			ul.appendChild(li);
 			this.mapArr[i].push(li);
 		}
 	}
 	this.obj.appendChild(ul);
 }
+
 mp.aStar = function () {
 	this.openArr.push(this.start);
 	this.start.G = 0;
@@ -111,6 +138,7 @@ mp.aStar = function () {
 	}
 	return false;
 }
+
 mp.getNeighbors = function (now) {
 	// 左上、左、左下
 	if (now.x-1>=0) {
@@ -121,7 +149,7 @@ mp.getNeighbors = function (now) {
 			this.getF(l);
 			this.openArr.push(l);
 		}
-		if(!this.direct){
+		if(this.direct == 0){
 			if (now.y-1>=0) {
 				var lt = this.mapArr[now.y-1][now.x-1];
 				if(lt.num===0) {
@@ -161,7 +189,7 @@ mp.getNeighbors = function (now) {
 			this.getF(r);
 			this.openArr.push(r);
 		}
-		if(!this.direct){
+		if(this.direct == 0){
 			if (now.y-1>=0) {
 				var rt = this.mapArr[now.y-1][now.x+1];
 				if(rt.num===0) {
@@ -193,12 +221,14 @@ mp.getNeighbors = function (now) {
 		}
 	}
 }
+
 mp.getF = function (node) {
 	var dx = Math.abs(node.x-node.pNode.x);
 	var dy = Math.abs(node.y-node.pNode.y);
 	node.G = node.pNode.G + ((dx && dy) ? 14 : 10);
 	node.F = node.G + Math.abs(node.x-this.end.x)*10 + Math.abs(node.y-this.end.y)*10;
 }
+
 mp.getMinFNode = function (now) {
 	var minNode = this.openArr[0];
 	for(var i=1,len=this.openArr.length;i<len;i++){
@@ -208,6 +238,7 @@ mp.getMinFNode = function (now) {
 	}
 	return minNode;
 }
+
 mp.removeFromOpen = function (node) {
 	var arr = this.openArr;
 	for (var i=0,len=arr.length;i<len;i++) {
@@ -217,6 +248,7 @@ mp.removeFromOpen = function (node) {
 		}
 	}
 }
+
 mp.inArray = function () {
 	for (var i=0, len=this.openArr.length;i<len;i++) {
 		if (this.openArr[i]===this.end) {
@@ -225,6 +257,7 @@ mp.inArray = function () {
 	}
 	return false;
 }
+
 mp.findRoute = function () {
 	if(this.aStar()){
 		var node = this.end.pNode;
@@ -232,13 +265,18 @@ mp.findRoute = function () {
 			this.route.push(node);
 			node = node.pNode;
 		}
+		var i = 0, len = this.route.length;
+		var _this = this;
+		this.timer = setInterval(function () {
+			if (_this.route[i]) {
+				_this.route[i].style.backgroundColor = "#FFCE44";
+				_this.route[i].innerHTML = i+1;
+			}
+			i === len ? clearInterval(_this.timer) : i ++;
+		}, 200);
+	}else{
+		alert('没有可以连通的路径！');
 	}
-	var i = 0, len = this.route.length;
-	var _this = this;
-	this.timer = setInterval(function () {
-		_this.route[i].style.background = "yellow";
-		i<len ? i++ : clearInterval(_this.timer);
-	}, 200);
 }
 	</script>
 </html>
