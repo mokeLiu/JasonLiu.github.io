@@ -56,7 +56,7 @@
 			top: 0; left: 0;
 			width: 100%; height: 100%;
 			z-index: 5;
-			background-color: rgba(40,41,35,.5);
+			background-color: rgba(40,41,35,.4);
 		}
 		.alertBox{
 			position: absolute;
@@ -396,6 +396,7 @@
 
 	game.prototype.gameOver = function() {
 		this.alertBox("游戏结束&nbsp;!", 'orange', 'red', "再试一次!", 'yellow', 'orange');
+		this.showBoom();
 	};
 
 	game.prototype.gameWin = function() {
@@ -408,5 +409,19 @@
 			}
 		}
 		this.alertBox("胜利&nbsp;!&nbsp;用时 "+this.timeStr, 'lightgreen', 'yellow', "再来一局", 'orange', 'lightgreen');
+	};
+
+	game.prototype.showBoom = function() {
+		for (var i = 0; i < this.width; i++) {
+			for (var j = 0; j < this.height; j++) {
+				var obj = this.itemMap[i][j];
+				if (!obj.show && obj.num === -1) {
+					obj.style.width = obj.style.height = this.a-4 +'px';
+					obj.className = 'cls clsBoom';
+					obj.innerHTML = '💣';
+				}
+			}
+		}
+	
 	};
 </script>
