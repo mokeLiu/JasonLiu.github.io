@@ -10,9 +10,9 @@
 		}
 		footer{
 			font-size: 30px;
+			font-weight: bold;
 			text-align: center;
 		}
-		#game_holder{}
 		#game_holder ul{
 			position: relative;
 			border-left: 1px solid #787A75;
@@ -29,7 +29,7 @@
 			border-radius: 4px;
 			background-color: #ABA8AA;
 			text-align: center;
-			font-size: 25px;
+			font-size: 20px;
 			font-weight: bold;
 		}
 		#game_holder ul li.cls{
@@ -90,7 +90,7 @@
 <script type="text/javascript">
 	window.onload = function(){
 		var body = document.body;
-		var g = new game(body, 20, 20, 50);
+		var g = new game(body, 15, 15, 30);
 		g.init();
 	}
 
@@ -365,10 +365,9 @@
 		var box = document.createElement('div');
 		box.className = 'alertBox';
 		box.innerHTML = txt;
-		var w = Math.floor(this.width/4);
-		box.style.width = w +'px';
-		box.style.lineHeight = box.style.height = this.a + 'px';
-		box.style.marginLeft = -w/2 +'px';
+		box.style.lineHeight = box.style.height = this.a*2 + 'px';
+		box.style.width = this.a*10 +'px';
+		box.style.marginLeft = -this.a*5 +'px';
 		box.style.borderColor = bColor;
 		box.style.color = color;
 
@@ -377,19 +376,16 @@
 		reset.innerHTML = btnTxt;
 		reset.style.color = btnColor;
 		reset.style.borderColor = btnBColor;
-		reset.style.width = Math.floor(this.width/5) +'px';
-		reset.style.marginLeft = -this.a*5/4 +'px';
-		reset.style.height = reset.style.lineHeight = this.width/10 + 'px';
+		reset.style.width = Math.floor(this.a*4) +'px';
+		reset.style.marginLeft = -this.a*2 +'px';
+		reset.style.height = reset.style.lineHeight = this.a*3/2 + 'px';
 		
 		var _this = this;
 
 		reset.onmouseup = function(){
 			_this.body.innerHTML = '';
-			var body = _this.body;
-			var width = _this.width;
-			var height = _this.height;
-			var boomNum = _this.boomNum;
-			var g = new game(body, width, height, boomNum);
+			var g = new game(_this.body, _this.width, _this.height, 
+			_this.boomNum);
 			g.init();
 		}
 
@@ -399,7 +395,7 @@
 	};
 
 	game.prototype.gameOver = function() {
-		this.alertBox("游戏结束!", 'orange', 'red', "再试一次!", 'yellow', 'orange');
+		this.alertBox("游戏结束&nbsp;!", 'orange', 'red', "再试一次!", 'yellow', 'orange');
 	};
 
 	game.prototype.gameWin = function() {
@@ -411,6 +407,6 @@
 				}
 			}
 		}
-		this.alertBox("胜利!&nbsp;用时 "+this.timeStr, 'lightgreen', 'yellow', "再来一局", 'orange', 'lightgreen');
+		this.alertBox("胜利&nbsp;!&nbsp;用时 "+this.timeStr, 'lightgreen', 'yellow', "再来一局", 'orange', 'lightgreen');
 	};
 </script>
