@@ -177,6 +177,7 @@
 					} else if (e.button === 0) {
 						_this.clickEvent(this);
 					}
+					console.log(_this.tileLeft +'--'+ _this.boomNum);
 					// 胜利条件判断
 					console.log(_this.tileLeft)
 					if (_this.tileLeft === _this.boomNum) {
@@ -251,12 +252,11 @@
 			if (obj.num === -1) {
 				obj.style.width = obj.style.height = this.a-4 +'px';
 				obj.className = 'cls clsBoom';
+				obj.style.backgroundColor = 'red';
 				obj.innerHTML = '💣';
 				this.gameOver();
 			} else if (obj.num === 0) {
 				this.getShowArray(obj);
-				obj.style.width = obj.style.height = this.a-4 +'px';
-				obj.className = 'cls';
 				if (this.showArray.length) {
 					for (var i = 0; i < this.showArray.length; i++) {
 						var item = this.showArray[i];
@@ -289,6 +289,7 @@
 
 	game.prototype.getShowArray = function(item) {
 		this.openArray.push(item);
+		this.showArray.push(item);
 		while (this.openArray.length) {
 			for (var i = 0; i < this.openArray.length; i++) {
 				var now = this.openArray[i];
