@@ -57,7 +57,7 @@ mp.prepare = function(obj, width, height, way){
 	this.ul[sel] = function (ev) {
 		if(!_this.getRoute && !ev.target.num){
 			//将开始与结束倒置，使得路径易于描绘
-			if(_this.end){
+			if(_this.end && ev.target!=_this.end){
 				_this.start = ev.target;
 				_this.start.style.background = "#DC4D41";
 				_this.start.innerHTML = "◈";
