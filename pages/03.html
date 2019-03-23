@@ -9,6 +9,13 @@ html, body, #stage{
 	width:100%;height:100%;
 	background-color:gray;
 }
+h1{
+	position: absolute;
+	width: 100%;
+	top: 0;left: 0;
+	text-align: center;
+	color: #fff;
+}
 ul{
 	border:1px solid #000;
 	position:relative;
@@ -81,7 +88,7 @@ ul li.cls5 div{color: #FFFFFF;}
    <script>
 window.onload = function(){
 	var stage = document.getElementById("stage");
-	var g = new game(stage, 1);
+	var g = new game(stage, 0);
 	g.init();
 }
 
@@ -91,15 +98,19 @@ function game(stage, level){
 	this.width = this.gameLevel[level][0];
 	this.height = this.gameLevel[level][1];
 	this.level = this.gameLevel[level][2];
+	this.timeLeft = this.gameLevel[level][3];
 	this.W = this.stage.offsetWidth;
 	this.H = this.stage.offsetHeight;
 	this.tilesLeft = this.width*this.height;
 }
 
 game.prototype.showType = ['✿', '✪', '❤', '※', '★', '◎'];
-game.prototype.gameLevel = [[5, 6, 4], [6, 6, 5], [8, 9, 6]];
+game.prototype.gameLevel = [[5, 6, 4, 150], [6, 6, 5, 200], [8, 9, 6, 300]];
 
 game.prototype.init = function(){
+	this.head = document.createElement('h1');
+	this.stage.appendChild(this.head);
+	this.calTime();
 	var map = [];
 	var a = this.W>this.H ? Math.floor(this.H*0.7/this.height) : Math.floor(this.W*0.8/this.width);
 	var ul = document.createElement("ul");
@@ -107,6 +118,7 @@ game.prototype.init = function(){
 	ul.style.marginLeft = -(a*this.width/2) +'px';
 	ul.style.height = a*this.height +"px";
 	ul.style.width = a*this.width +"px";
+	this.head.style.height = this.head.style.lineHeight = (this.H-a*this.height)/2 +'px';
 	this.getMapArrByCopy();
 	for(var i=0;i<this.height;i++){
 		map[i] = [];
@@ -238,6 +250,19 @@ game.prototype.getMapArrByCopy = function(){
 	this.mapArr = mapArr;
 }
 
+game.prototype.calTime = function() {
+	var _this = this;
+	this.head.innerHTML = this.timeLeft +' s';
+	this.timeCount = setInterval(function(){
+		_this.timeLeft --;
+		_this.head.innerHTML = _this.timeLeft +' s';
+		if(_this.timeLeft === 0){
+			clearInterval(_this.timeCount);
+			_this.gameOver();
+		}
+	}, 1000);
+};
+
 game.prototype.alertBox = function(txt, color, bColor, btnTxt, btnColor, btnBColor) {
 		var a = this.W>this.H ? Math.floor(this.H/10) : Math.floor(this.W/10);
 
@@ -277,7 +302,6 @@ game.prototype.alertBox = function(txt, color, bColor, btnTxt, btnColor, btnBCol
 
 	game.prototype.gameOver = function() {
 		this.alertBox("游戏结束&nbsp;!", 'orange', 'red', "再试一次!", 'yellow', 'orange');
-		this.showBoom();
 	};
 
 	game.prototype.gameWin = function() {
