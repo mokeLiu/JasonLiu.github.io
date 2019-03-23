@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>记忆方块</title>
+      <meta name="viewport" content = "initial-scale=1, width=device-width" />
+      <style>
+*{margin:0;padding:0;}
+html, body, #stage{
+	width:100%;height:100%;
+	background-color:gray;
+}
+ul{
+	border:1px solid #000;
+	position:relative;
+	left:50%;top:50%;
+	background-color:#fff;
+	border-radius: 10px;
+	background-color: #FBD866;
+}
+ul li{
+	perspective: 800px;
+	list-style:none;
+	float:left;
+	margin: 2px;
+	cursor: pointer;
+}
+ul li div{
+	width: 100%;height: 100%;
+	border-radius: 10px;
+	background-color: #F3B603;
+	text-align:center;
+	border:2px outset #A74100;
+	font-size:35px;
+	font-weight: bold;
+	box-sizing: border-box;
+}
+ul li:hover div{box-shadow: 0 0 8px gray;}
+ul li.cls0 div{color: #E8410C;}
+ul li.cls1 div{color: #129700;}
+ul li.cls2 div{color: #FFFD82;}
+ul li.cls3 div{color: #2E3047;}
+ul li.cls4 div{color: #1B998B;}
+ul li.cls5 div{color: #FFFFFF;}
+.mask{
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%; height: 100%;
+	z-index: 5;
+	background-color: rgba(40,41,35,.4);
+}
+.alertBox{
+	position: absolute;
+	z-index: 10;
+	top: 30%; left: 50%;
+	background-color: rgba(0, 0, 0, .5);
+	border: 2px solid;
+	border-radius: 10px;
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+}
+.button{
+	position: absolute;
+	z-index: 10;
+	top: 55%; left: 50%;
+	background-color: rgba(0, 0, 0, .5);
+	border: 2px solid;
+	border-radius: 5px;
+	font-size: 18px;
+	text-align: center;
+	cursor: pointer;
+}
+.button:hover{
+	font-size: 20px;
+}
+      </style>
+   </head>
+   <body>
+      <div id="stage"></div>
+   </body>
+   <script>
+window.onload = function(){
+	var stage = document.getElementById("stage");
+	var g = new game(stage, 1);
+	g.init();
+}
+
+function game(stage, level){
+	this.stage = stage;
+	this.selLevel = level;
+	this.width = this.gameLevel[level][0];
+	this.height = this.gameLevel[level][1];
+	this.level = this.gameLevel[level][2];
+	this.W = this.stage.offsetWidth;
+	this.H = this.stage.offsetHeight;
+	this.tilesLeft = this.width*this.height;
+}
+
+game.prototype.showType = ['✿', '✪', '❤', '※', '★', '◎'];
+game.prototype.gameLevel = [[5, 6, 4], [6, 6, 5], [8, 9, 6]];
+
+game.prototype.init = function(){
+	var map = [];
+	var a = this.W>this.H ? Math.floor(this.H*0.7/this.height) : Math.floor(this.W*0.8/this.width);
+	var ul = document.createElement("ul");
+	ul.style.marginTop = -(a*this.height/2) +"px";
+	ul.style.marginLeft = -(a*this.width/2) +'px';
+	ul.style.height = a*this.height +"px";
+	ul.style.width = a*this.width +"px";
+	this.getMapArrByCopy();
+	for(var i=0;i<this.height;i++){
+		map[i] = [];
+		for(var j=0;j<this.width;j++){
+			var li = document.createElement("li");
+			var div = document.createElement("div");
+			li.style.width = li.style.height = (a-4) +"px";
+			li.style.lineHeight = (a-8) +"px";
+			var val = this.mapArr[i*this.width+j];
+			li.val = val, li.div = div;
+			li.className = 'cls'+val;
+			ul.appendChild(li);
+			li.appendChild(div);
+			var _this = this;
+			li.onmouseup = function(){
+				if (!this.sel) {
+					_this.showCard(this);
+				}
+			}
+		}
+	}
+	this.stage.appendChild(ul);
+}
+
+game.prototype.judgeTiles = function(obj) {
+	var prev = obj.prev;
+	if(prev.val === obj.val){
+		prev.style.visibility = 'hidden';
+		obj.style.visibility = 'hidden';
+		this.tilesLeft -= 2;
+		if (!this.tilesLeft) {
+			this.gameWin();
+		}
+	} else {
+		this.hideCard(obj);
+		this.hideCard(prev);
+	}
+};
+
+game.prototype.showCard = function(obj) {
+	if (!obj.interTimer) {
+		obj.sel = true;
+		var deg = 0;
+		var showType = this.showType;
+		var _this = this;
+		obj.interTimer = setInterval(function(){
+			if (deg === 180) {
+				clearInterval(obj.interTimer);
+				obj.interTimer = null;
+				setTimeout(function(){
+					if (_this.preSel) {
+						// 对两者进行判断
+						obj.prev = _this.preSel;
+						_this.preSel = null;
+						_this.judgeTiles(obj);
+					} else {
+						_this.preSel = obj;
+					}
+				}, 300);
+			} else {
+				deg += 5;
+				obj.div.style.transform = 'rotateY('+ deg +'deg)';
+			}
+			if (deg === 90) {
+				obj.div.innerHTML = showType[obj.val];
+			}
+		}, 25);
+	}
+
+};
+
+game.prototype.hideCard = function(obj) {
+	if (!obj.interTimer) {
+		obj.sel = false;
+		var deg = 180;
+		var _this = this;
+		obj.interTimer = setInterval(function(){
+			if (deg === 0) {
+				clearInterval(obj.interTimer);
+				obj.interTimer = null;
+			} else {
+				deg -= 5;
+				obj.div.style.transform = 'rotateY('+ deg +'deg)';
+			}
+			if (deg === 90) {
+				obj.div.innerHTML = '';
+			}
+		}, 25);
+	}
+};
+
+game.prototype.getMapArrByAdd = function(){
+	//1。末尾补全法
+	var mapArr = [];
+	var itemUsed = [];
+	for(var i=0;i<this.level;i++){
+		itemUsed[i] = 0;
+	}
+	var num = this.width*this.height-this.level;
+	for(var i=0;i<num;i++){
+		var rand = Math.floor(Math.random()*this.level);
+		mapArr.push(rand);
+		itemUsed[rand]++;
+	}
+	for(var i=0;i<this.level;i++){
+		if(itemUsed[i]%2){
+			mapArr.push(i);
+		}else if(onOff){
+			mapArr.push(i);
+			mapArr.push(i);
+			onOff = false;
+		}
+	}
+	this.mapArr = mapArr;
+}
+
+game.prototype.getMapArrByCopy = function(){
+	//2。取半复制法
+	var mapArr = [];
+	var num = this.width*this.height/2;
+	for(var i=0;i<num;i++){
+		var rand = Math.floor(Math.random()*this.level);
+		mapArr.push(rand);
+	}
+	for(var i=0;i<num;i++){
+		mapArr.push(mapArr[i]);
+	}
+	mapArr.sort(function(){return Math.random()-0.5;});
+	this.mapArr = mapArr;
+}
+
+game.prototype.alertBox = function(txt, color, bColor, btnTxt, btnColor, btnBColor) {
+		var a = this.W>this.H ? Math.floor(this.H/10) : Math.floor(this.W/10);
+
+		var mask = document.createElement('div');
+		mask.className = 'mask';
+
+		var box = document.createElement('div');
+		box.className = 'alertBox';
+		box.innerHTML = txt;
+		box.style.lineHeight = box.style.height = a*3/2 + 'px';
+		box.style.width = a*5 +'px';
+		box.style.marginLeft = -a*5/2 +'px';
+		box.style.borderColor = bColor;
+		box.style.color = color;
+
+		var reset = document.createElement('div');
+		reset.className = 'button';
+		reset.innerHTML = btnTxt;
+		reset.style.color = btnColor;
+		reset.style.borderColor = btnBColor;
+		reset.style.width = a*3+'px';
+		reset.style.marginLeft = -a*3/2 +'px';
+		reset.style.height = reset.style.lineHeight = a + 'px';
+		
+		var _this = this;
+
+		reset.onmouseup = function(){
+			_this.stage.innerHTML = '';
+			var g = new game(_this.stage, _this.selLevel);
+			g.init();
+		}
+
+		this.stage.appendChild(mask);
+		this.stage.appendChild(box);
+		this.stage.appendChild(reset);
+	};
+
+	game.prototype.gameOver = function() {
+		this.alertBox("游戏结束&nbsp;!", 'orange', 'red', "再试一次!", 'yellow', 'orange');
+		this.showBoom();
+	};
+
+	game.prototype.gameWin = function() {
+		this.alertBox("胜利&nbsp;!&nbsp;", 'lightgreen', 'yellow', "再来一局", 'orange', 'lightgreen');
+	};
+   </script>
+</html>

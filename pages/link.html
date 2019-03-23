@@ -1,22 +1,149 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<title>连连看</title>
-</head>
-<body>
+<html lang="en">
+   <head>
+      <title>连连看</title>
+      <meta name="viewport" content = "initial-scale=1, width=device-width, userscalable=no" />
+      <style>
+*{margin:0;padding:0;}
+html, body, #stage{
+	width:100%;height:100%;
+	background-color:gray;
+}
+ul{
+	border:1px solid #000;
+	position:relative;
+	left:50%;top:50%;
+	background-color:#fff;
+	border-radius: 10px;
+	background-color: #FBD866;
+}
+ul li{
+	list-style:none;
+	text-align:center;
+	border:2px outset #A74100;
+	font-size:50px;
+	font-weight: bold;
+	box-sizing: border-box;
+	float:left;
+	border-radius: 10px;
+	margin: 2px;
+	background-color: #F3B603;
+	cursor: pointer;
+}
+ul li:hover{box-shadow: 0 0 5px gray;}
+ul li.cls0{color: #E8410C;}
+ul li.cls1{color: #129700;}
+ul li.cls2{color: #FFFD82;}
+ul li.cls3{color: #2E3047;}
+ul li.cls4{color: #1B998B;}
+ul li.cls5{color: #FFFFFF;}
+ul li.sel{background-color: #FF9A00;}
+      </style>
+   </head>
+   <body>
+      <div id="stage"></div>
+   </body>
+   <script>
+window.onload = function(){
+	var stage = document.getElementById("stage");
+	var g = new game(stage, 8, 6);
+	g.init();
+}
 
-</body>
+function game(stage, num, level){
+	this.stage = stage;
+	this.num = num;
+	this.level = level;
+	this.selNum = 0;
+	this.onOff = true;
+}
+
+game.prototype.showType = ['✿', '✪', '❤', '※', '★', '◎'];
+
+game.prototype.init = function(){
+	var map = [];
+	var W = this.stage.offsetWidth;
+	var H = this.stage.offsetHeight;
+	var A = W>H ? H*0.8 : W*0.9;
+	var a = Math.floor(A/this.num);
+	var ul = document.createElement("ul");
+	ul.style.marginTop = ul.style.marginLeft = -(a*this.num/2) +"px";
+	ul.style.width = ul.style.height = a*this.num +"px";
+	this.getMapArrByCopy();
+	for(var i=0;i<this.num;i++){
+		map[i] = [];
+		for(var j=0;j<this.num;j++){
+			var li = document.createElement("li");
+			li.style.width = li.style.height = (a-4) +"px";
+			li.style.lineHeight = (a-8) +"px";
+			var val = this.mapArr[i*this.num+j];
+			li.val = val;
+			// if(li.val===0) li.style.visibility = 'hidden';
+			li.className = 'cls'+val;
+			li.innerHTML = this.showType[val];
+			ul.appendChild(li);
+			var _this = this;
+			li.onmouseup = function(){
+				if (_this.onOff) {
+					if (!this.sel) {
+						_this.selNum ++;
+						this.className += ' sel';
+						this.sel = true;
+						if (_this.selNum === 1) {
+							_this.preSel = this;
+						} else if (_this.selNum === 2) {
+							_this.onOff = false;
+						}
+					}else{
+						this.className = 'sel'+this.val;
+						this.sel = false;
+					}
+				}
+			}
+		}
+	}
+	this.stage.appendChild(ul);
+}
+
+game.prototype.getMapArrByAdd = function(){
+	//1。末尾补全法
+	var mapArr = [];
+	var itemUsed = [];
+	for(var i=0;i<this.level;i++){
+		itemUsed[i] = 0;
+	}
+	var num = this.num*this.num-this.level;
+	for(var i=0;i<num;i++){
+		var rand = Math.floor(Math.random()*this.level);
+		mapArr.push(rand);
+		itemUsed[rand]++;
+	}
+	var onOff = true;
+	for(var i=0;i<this.level;i++){
+		if(itemUsed[i]%2){
+			mapArr.push(i);
+		}else if(onOff){
+			mapArr.push(i);
+			mapArr.push(i);
+			onOff = false;
+		}
+	}
+	this.mapArr = mapArr;
+}
+
+game.prototype.getMapArrByCopy = function(){
+	//2。取半复制法
+	var mapArr = [];
+	var num = this.num*this.num/2;
+	for(var i=0;i<num;i++){
+		var rand = Math.floor(Math.random()*this.level);
+		mapArr.push(rand);
+	}
+	for(var i=0;i<num;i++){
+		mapArr.push(mapArr[i]);
+	}
+	mapArr.sort(function(){return Math.random()-0.5;});
+	this.mapArr = mapArr;
+}
+   </script>
 </html>
-<script type="text/javascript">
-	window.onload = function(){
-
-	}
-
-	function Link(width, height){
-		this
-	}
-
-	Link.prototype.init = function() {
-		// body...
-	};
-</script>
