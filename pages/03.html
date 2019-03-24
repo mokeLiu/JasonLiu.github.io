@@ -10,10 +10,9 @@ html, body, #stage{
 	background-color:gray;
 }
 h1{
+	margin: 0 auto;
 	position: absolute;
-	width: 100%;
-	top: 0;left: 0;
-	text-align: center;
+	top: 0;left: 50%;
 	color: #fff;
 }
 ul{
@@ -88,7 +87,7 @@ ul li.cls5 div{color: #FFFFFF;}
    <script>
 window.onload = function(){
 	var stage = document.getElementById("stage");
-	var g = new game(stage, 0);
+	var g = new game(stage, 1);
 	g.init();
 }
 
@@ -102,14 +101,23 @@ function game(stage, level){
 	this.W = this.stage.offsetWidth;
 	this.H = this.stage.offsetHeight;
 	this.tilesLeft = this.width*this.height;
+	this.scoreCount = 0;
+	this.wrongCount = 0;
 }
 
 game.prototype.showType = ['✿', '✪', '❤', '※', '★', '◎'];
-game.prototype.gameLevel = [[5, 6, 4, 150], [6, 6, 5, 200], [8, 9, 6, 300]];
+game.prototype.gameLevel = [[5, 6, 4, 120], [6, 6, 5, 150], [8, 9, 6, 200]];
 
 game.prototype.init = function(){
 	this.head = document.createElement('h1');
+	this.score = document.createElement('span');
+	this.time = document.createElement('span');
+	this.score.style.float = 'left';
+	this.score.innerHTML = 'score : '+this.scoreCount;
+	this.time.style.float = 'right';
 	this.stage.appendChild(this.head);
+	this.head.appendChild(this.score);
+	this.head.appendChild(this.time);
 	this.calTime();
 	var map = [];
 	var a = this.W>this.H ? Math.floor(this.H*0.7/this.height) : Math.floor(this.W*0.8/this.width);
@@ -118,6 +126,8 @@ game.prototype.init = function(){
 	ul.style.marginLeft = -(a*this.width/2) +'px';
 	ul.style.height = a*this.height +"px";
 	ul.style.width = a*this.width +"px";
+	this.head.style.width = a*(this.width+1) +'px';
+	this.head.style.marginLeft = -Math.floor(a*(this.width+1)/2) +'px';
 	this.head.style.height = this.head.style.lineHeight = (this.H-a*this.height)/2 +'px';
 	this.getMapArrByCopy();
 	for(var i=0;i<this.height;i++){
@@ -148,13 +158,24 @@ game.prototype.judgeTiles = function(obj) {
 	if(prev.val === obj.val){
 		prev.style.visibility = 'hidden';
 		obj.style.visibility = 'hidden';
+		this.scoreCount += 10;
+		this.score.innerHTML = 'score : '+this.scoreCount;
 		this.tilesLeft -= 2;
 		if (!this.tilesLeft) {
+			this.scoreCount += this.timeLeft*2;
 			this.gameWin();
 		}
 	} else {
 		this.hideCard(obj);
 		this.hideCard(prev);
+		if (this.scoreCount>10) {
+			this.wrongCount ++;
+			if (this.wrongCount === 3) {
+				this.scoreCount -= 5;
+				this.score.innerHTML = 'score : '+this.scoreCount;
+				this.wrongCount = 0;
+			}
+		}
 	}
 };
 
@@ -252,10 +273,10 @@ game.prototype.getMapArrByCopy = function(){
 
 game.prototype.calTime = function() {
 	var _this = this;
-	this.head.innerHTML = this.timeLeft +' s';
+	this.time.innerHTML = this.timeLeft +' s';
 	this.timeCount = setInterval(function(){
 		_this.timeLeft --;
-		_this.head.innerHTML = _this.timeLeft +' s';
+		_this.time.innerHTML = _this.timeLeft +' s';
 		if(_this.timeLeft === 0){
 			clearInterval(_this.timeCount);
 			_this.gameOver();
@@ -301,11 +322,13 @@ game.prototype.alertBox = function(txt, color, bColor, btnTxt, btnColor, btnBCol
 	};
 
 	game.prototype.gameOver = function() {
-		this.alertBox("游戏结束&nbsp;!", 'orange', 'red', "再试一次!", 'yellow', 'orange');
+		clearInterval(this.timeCount);
+		this.alertBox("游戏结束&nbsp;!&nbsp;得分："+this.scoreCount, 'orange', 'red', "再试一次!", 'yellow', 'orange');
 	};
 
 	game.prototype.gameWin = function() {
-		this.alertBox("胜利&nbsp;!&nbsp;", 'lightgreen', 'yellow', "再来一局", 'orange', 'lightgreen');
+		clearInterval(this.timeCount);
+		this.alertBox("胜利&nbsp;!&nbsp;得分："+this.scoreCount, 'lightgreen', 'yellow', "再来一局", 'orange', 'lightgreen');
 	};
    </script>
 </html>
