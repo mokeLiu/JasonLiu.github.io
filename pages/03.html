@@ -8,6 +8,10 @@
 html, body, #stage{
 	width:100%;height:100%;
 	background-color:gray;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
 }
 h1{
 	margin: 0 auto;
@@ -87,7 +91,7 @@ ul li.cls5 div{color: #FFFFFF;}
    <script>
 window.onload = function(){
 	var stage = document.getElementById("stage");
-	var g = new game(stage, 1);
+	var g = new game(stage, Math.floor(Math.random()*3));
 	g.init();
 }
 
@@ -113,7 +117,7 @@ game.prototype.init = function(){
 	this.score = document.createElement('span');
 	this.time = document.createElement('span');
 	this.score.style.float = 'left';
-	this.score.innerHTML = 'score : '+this.scoreCount;
+	this.score.innerHTML = '记忆方块&nbsp;&nbsp;&nbsp;score : '+this.scoreCount;
 	this.time.style.float = 'right';
 	this.stage.appendChild(this.head);
 	this.head.appendChild(this.score);
@@ -159,10 +163,11 @@ game.prototype.judgeTiles = function(obj) {
 		prev.style.visibility = 'hidden';
 		obj.style.visibility = 'hidden';
 		this.scoreCount += 10;
-		this.score.innerHTML = 'score : '+this.scoreCount;
+		this.score.innerHTML = '记忆方块&nbsp;&nbsp;&nbsp;score : '+this.scoreCount;
 		this.tilesLeft -= 2;
 		if (!this.tilesLeft) {
 			this.scoreCount += this.timeLeft*2;
+			this.score.innerHTML = '记忆方块&nbsp;&nbsp;&nbsp;score : '+this.scoreCount;
 			this.gameWin();
 		}
 	} else {
@@ -172,7 +177,7 @@ game.prototype.judgeTiles = function(obj) {
 			this.wrongCount ++;
 			if (this.wrongCount === 3) {
 				this.scoreCount -= 5;
-				this.score.innerHTML = 'score : '+this.scoreCount;
+				this.score.innerHTML = '记忆方块&nbsp;&nbsp;&nbsp;score : '+this.scoreCount;
 				this.wrongCount = 0;
 			}
 		}
@@ -312,7 +317,7 @@ game.prototype.alertBox = function(txt, color, bColor, btnTxt, btnColor, btnBCol
 
 		reset.onmouseup = function(){
 			_this.stage.innerHTML = '';
-			var g = new game(_this.stage, _this.selLevel);
+			var g = new game(_this.stage, Math.floor(Math.random()*3));
 			g.init();
 		}
 
