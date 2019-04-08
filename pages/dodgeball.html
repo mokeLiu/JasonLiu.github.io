@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>躲避球</title>
+	<style type="text/css">
+		*{margin: 0;padding: 0;}
+		html, body{
+			width: 100%;
+			height: 100%;
+			background-color: gray;
+		}
+		.can{
+			background-color: pink;
+			border: 1px solid red;
+			display: block;
+			position: relative;
+			top: 50%;left: 50%;
+		}
+	</style>
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+window.onload = function(){
+	var g = new game(document.body, 100);
+	g.init();
+}
+
+function game(stage, size){
+	this.stage = stage;
+	this.size = size;
+	this.preSet();
+}
+
+game.prototype.preSet = function() {
+	this.W = this.stage.offsetWidth;
+	this.H = this.stage.offsetHeight;
+	this.a = this.W>this.H ? Math.floor(this.H*0.8) : Math.floor(this.W*0.9);
+};
+
+game.prototype.init = function() {
+	var can = document.createElement('canvas');
+	can.className = 'can';
+	this.stage.appendChild(can);
+	can.width = can.height = this.a;
+	can.style.marginLeft = can.style.marginTop = -Math.floor(this.a/2) +'px';
+
+	var cxt = can.getContext('2d');
+	cxt.moveTo(0,0);
+	cxt.lineWidth = '10';
+	cxt.lineCap = cxt.lineJoin = 'round';
+	cxt.strokeStyle = 'blue';
+	cxt.lineTo(100, 100);
+	cxt.lineTo(150, 50);
+	cxt.lineTo(500, 400);
+	cxt.moveTo(200, 200);
+	cxt.arc(200, 200, 10, 0, Math.PI*2)
+	cxt.stroke();
+};
+</script>
+</html>

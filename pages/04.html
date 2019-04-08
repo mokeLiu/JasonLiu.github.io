@@ -108,11 +108,12 @@ function game(stage, level){
 	this.height = this.gameLevel[level][1];
 	this.level = this.gameLevel[level][2];
 	this.timeLeft = this.gameLevel[level][3];
+	this.fontSize = this.gameLevel[level][4];
 	this.preSet();
 }
 
 game.prototype.showType = ['', '✿', '✪', '❤', '☄', '♨', '☢', '☁', '☂'];
-game.prototype.gameLevel = [[5, 6, 6, 50], [6, 6, 7, 80], [8, 9, 8, 100]];
+game.prototype.gameLevel = [[5, 6, 6, 50, 40], [6, 6, 7, 80, 35], [8, 9, 8, 100, 30]];
 
 game.prototype.preSet = function() {
 	this.W = this.stage.offsetWidth;
@@ -129,6 +130,7 @@ game.prototype.preSet = function() {
 	this.score.style.float = 'left';
 	this.score.innerHTML = '连连看&nbsp;&nbsp;&nbsp;score : '+this.scoreCount;
 	this.time.style.float = 'right';
+	this.stage.style.fontSize = this.fontSize+'px';
 	this.stage.appendChild(this.head);
 	this.head.appendChild(this.score);
 	this.head.appendChild(this.time);
