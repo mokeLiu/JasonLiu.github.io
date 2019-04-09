@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>plane</title>
+      <meta name="viewport" content = "initial-scale=1, width=device-width, user-scalable=no" />
+      <style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html, body, #stage{
+	width:100%;height:100%;
+	background-color:skyblue;
+}
+#stage{
+	position:relative;
+	top:0;left:0;
+	overflow:hidden;
+	box-sizing: border-box;
+}
+.mask{
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, .5);
+	z-index: 10;
+}
+.hero{
+	position:absolute;
+	background-color:darkblue;
+	bottom:20px;
+	border:1px solid red;
+	z-index: 5;
+}
+.enemy{
+	position: absolute;
+	background-color: purple;
+	z-index: 2;
+	color: #fff;
+	text-align: center;
+	border: 1px solid green;
+	border-radius: 50%;
+}
+.biu{
+	position:absolute;
+	background-color:red;
+	border-radius: 50%;
+}
+      </style>
+   </head>
+   <body>
+      <div id="stage"></div>
+   </body>
+   <script>
+window.onload = function(){
+	var stage = document.getElementById("stage");
+	var g = new game(stage);
+}
+
+function game(stage){
+	this.stage = stage;
+	this.eNum = 10;
+	this.init();
+}
+game.prototype.init = function(){
+	var W = this.stage.offsetWidth;
+	var H = this.stage.offsetHeight;
+	var A = W>H ? H*2/3 : W*3/5;
+	var a = Math.floor(A/8);
+	this.a = a;
+	this.bius = [];
+	this.enemys = [];
+	this.getHero();
+	this.getEnemy(2, 10);
+}
+game.prototype.getHero = function(){
+	var hero = document.createElement('p');
+	var a = this.a;
+	hero.style.width = hero.style.height = a +"px";
+	hero.style.left = Math.floor((this.stage.offsetWidth-a)/2) +"px";
+	hero.className = 'hero';
+	this.stage.appendChild(hero);
+	this.hero = hero;
+
+	var gThis = this;
+	var down = 'ontouchstart' in window ? 'ontouchstart' : 'onmousedown';
+	hero[down] = function(){
+		this.onOff = true;
+		var count = 0;
+		var _this = this;
+		if(!this.biuTimer){
+			this.biuTimer = setInterval(function(){
+				var biu = document.createElement('h5');
+				biu.className = 'biu';
+				biu.index = count ++;
+				biu.style.width = biu.style.height = Math.floor(a/5) +'px';
+				biu.style.left = _this.x-Math.floor(a/10) +'px';
+				biu.style.top = _this.y-Math.floor(a*3/5) +'px';
+				gThis.stage.appendChild(biu);
+				gThis.bius.push(biu);
+
+				biu.timer = setInterval(function(){
+					biu.style.top = biu.offsetTop-5 +'px';
+					if(biu.offsetTop <= 0){
+						gThis.removeBiu(biu);
+					}
+				}, 30);
+			}, 200);
+		}
+	}
+
+	var move = 'ontouchmove' in window ? 'ontouchmove' : 'onmousemove';
+	hero[move] = function(ev){
+		var ev = ev || window.event;
+		var data = 'ontouchmove' in window ? ev.touches[0] : ev;
+		if(this.onOff){
+			this.y = data.clientY;
+			this.x = data.clientX;
+			this.style.top = Math.min(gThis.stage.offsetHeight-a, Math.max(0, this.y-a/2)) +'px';
+			this.style.left = Math.min(gThis.stage.offsetWidth-a, Math.max(0, this.x-a/2)) +'px';
+		}
+	}
+
+	var up = 'ontouchend' in window ? 'ontouchend' : 'onmouseup';
+	hero[up] = function(){
+		clearInterval(this.biuTimer);
+		this.biuTimer = null;
+		this.onOff = false;
+	}
+}
+
+game.prototype.getEnemy = function(min, max) {
+	var maxW = this.stage.offsetWidth;	// 最大宽度
+	var maxH = this.stage.offsetHeight;
+	var gThis = this;
+
+	var randInter = Math.floor(Math.random()*1000)+500;
+	this.eTimer = setInterval(function(){
+		if (gThis.enemys.length<gThis.eNum) {
+			var rand = Math.floor(Math.random()*(max-min))+min+1;	// 随机数值
+			var eW = gThis.a+rand;
+			var posX = Math.floor(Math.random()*(maxW-2*eW)+eW);
+			var e = document.createElement('h4');
+			e.innerHTML = e.num = rand;
+			e.className = 'enemy';
+			gThis.stage.appendChild(e);
+			gThis.enemys.push(e);
+			e.style.width = e.style.height = e.style.lineHeight = eW +'px';
+			e.style.top = 0;
+			e.style.left = posX +'px';
+			e.timer = setInterval(function(){
+				e.style.top = e.offsetTop+3 +'px';
+				if (gThis.judgeMeetRect(gThis.hero, e)) {
+					gThis.gameOver();
+				}
+				for (var i = 0; i < gThis.bius.length; i++) {
+					var now = gThis.bius[i];
+					if (gThis.judgeMeetRound(e, now)) {
+						e.num --;
+						gThis.removeBiu(now);
+						e.innerHTML = e.num;
+						if (e.num === 0) {
+							gThis.removeEnemy(e);
+						}
+					}
+				}
+				if (e.offsetTop >= maxH) {
+					gThis.removeEnemy(e);
+				}
+			}, 30);
+		}
+		randInter = Math.floor(Math.random()*700)+300;
+	}, randInter);
+};
+
+game.prototype.removeBiu = function(biu) {
+	this.bius.splice(this.inArray(biu, this.bius), 1);
+	biu.parentNode.removeChild(biu);
+	clearInterval(biu.timer);
+};
+
+game.prototype.removeEnemy = function(enemy) {
+	this.enemys.splice(this.inArray(enemy, this.enemys), 1);
+	enemy.parentNode.removeChild(enemy);
+	clearInterval(enemy.timer);
+};
+
+game.prototype.gameOver = function(enemy) {
+	this.eNum = 0;
+	for (var i = 0; i < this.enemys.length; i++) {
+		clearInterval(this.enemys[i].timer);
+	}
+	this.hero.onOff = false;
+	var mask = document.createElement('h1');
+	mask.className = 'mask';
+	this.stage.appendChild(mask);
+};
+
+game.prototype.judgeMeetRect = function(objA, objB) {
+	var min = objA.offsetLeft<=objB.offsetLeft ? objA : objB;
+	var max = objA.offsetLeft<=objB.offsetLeft ? objB : objA;
+	var minH = min.offsetHeight/2;
+	var minW = min.offsetWidth/2;
+	var maxH = max.offsetHeight/2;
+	var maxW = max.offsetWidth/2;
+	if (min.offsetTop<max.offsetTop) {
+		if ((max.offsetTop+maxH)-(min.offsetTop+minH)<(maxH+minH) && (max.offsetLeft+maxW)-(min.offsetLeft+minW)<(maxW+minW)) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		if ((min.offsetTop+minH)-(max.offsetTop+maxH)<(maxH+minH) && (max.offsetLeft+maxW)-(min.offsetLeft+minW)<(maxW+minW)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+};
+
+game.prototype.judgeMeetRound = function(objA, objB) {
+	var Ar = objA.offsetWidth/2
+	var Ax = objA.offsetLeft+Ar;
+	var Ay = objA.offsetTop+Ar;
+	var Br = objB.offsetWidth/2
+	var Bx = objB.offsetLeft+Br;
+	var By = objB.offsetTop+Br;
+	if ((Math.pow(Ar+Br, 2)) >= (Math.pow(Ax-Bx, 2)+Math.pow(Ay-By, 2))) {
+		return true;
+	} else {
+		return false;
+	}
+};
+
+game.prototype.inArray = function(item, arr) {
+	for (var i = 0; i < arr.length; i++) {
+		if(arr[i] === item) return i;
+	}
+	return false;
+};
+   </script>
+</html>
