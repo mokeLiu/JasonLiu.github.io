@@ -14,13 +14,15 @@ window.onload = function(){
 	var timer = setInterval(function(){
 		second ++;
 		console.log(second+'s');
-		var rand = Math.floor(Math.random()*2);
+		var rand = Math.floor(Math.random());
 		// 炮弹
-		if (rand && plane>0) {
-			plane --;
-			console.log('\t发射炮弹，飞机被摧毁！');
-		} else if (rand===0 && plane>0) {
-			console.log('\t炮弹发射，但未击中！');
+		if (plane>0) {
+			if (rand>.5) {
+				plane --;
+				console.log('\t发射炮弹，飞机被摧毁！');
+			} else {
+				console.log('\t炮弹发射，但未击中！');
+			}
 		}
 		// 飞机
 		if ((second-1)%3===0 && second!==0) {
@@ -28,7 +30,7 @@ window.onload = function(){
 			console.log('\t飞机生成~');
 		}
 		console.log('\t飞机剩余数量：'+plane);
-		if (second===30) {
+		if (second===100) {
 			clearInterval(timer);
 		}
 	}, 1000);
